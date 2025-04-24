@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SHARE Potential Shelter Sites</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css" rel="stylesheet" />
+  <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet" />
+
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: Raleway, sans-serif;
+      background: #f1f1f1;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 43px;
+      background: #000;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1rem;
+      z-index: 1000;
+    }
+
+    .filter-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-tabs a {
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-tabs a:hover {
+      color: #00bfff;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 43px;
+      left: 0;
+      width: 300px;
+      height: calc(100% - 43px);
+      background: white;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      z-index: 1001;
+    }
+
+    .sidebar.active {
+      transform: translateX(0);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 1000;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    .main {
+      position: absolute;
+      top: 43px;
+      left: 0;
+      right: 0;
+      height: calc(100vh - 43px);
+      display: flex;
+      z-index: 0;
+    }
+
+    .map-container {
+      flex: 1;
+      position: relative;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .geocoder {
+      position: absolute;
+      top: 10px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      z-index: 1002;
+    }
+
+    .right-sidebar {
+      width: 300px;
+      height: 100%;
+      background: #fff;
+      overflow-y: auto;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+      padding: 1rem;
+    }
+
+    .sidebar h4 {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+    }
+
+    .range-display {
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    #sqftSlider {
+      margin: 10px 0 20px;
+      max-width: 85%;
+    }
+
+    .noUi-target {
+      height: 7px;
+      background: #ddd;
+      border-radius: 3px;
+    }
+
+    .noUi-connect {
+      background: #2196f3;
+    }
+
+    .noUi-horizontal .noUi-handle:before,
+    .noUi-horizontal .noUi-handle:after {
+      display: none;
+      content: none !important;
+    }
+
+    .noUi-horizontal .noUi-handle {
+      width: 8px !important;
+      height: 14px !important;
+      top: -3px !important;
+      right: -6px !important;
+      border-radius: 3px;
+      background: white;
+      border: 2px solid #2196f3;
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <button class="filter-btn" onclick="openSidebar()"><i class="fa fa-bars"></i> Filter</button>
+    <div class="nav-tabs">
+      <a href="#">SHARE</a>
+      <a href="#">User Guide</a>
+      <a href="#">About</a>
+    </div>
+  </div>
+
+  <div id="mySidebar" class="sidebar">
+    <div style="padding: 1rem;">
+      <h3>Map Filters</h3>
+
+      <h4>Sq ft</h4>
+      <div id="sqftSlider"></div>
+      <div class="range-display"><span id="sqftRangeText">500 – 2000 sq ft</span></div>
+
+      <h4>Utilities</h4>
+      <label><input type="checkbox"> Gas</label>
+      <label><input type="checkbox"> Water</label>
+      <label><input type="checkbox"> Electricity</label>
+      <label><input type="checkbox"> Restrooms</label>
+      <label><input type="checkbox"> Sewage</label>
+
+      <h4>Type</h4>
+      <label><input type="checkbox"> Indoor</label>
+      <label><input type="checkbox"> Outdoor</label>
+
+      <h4>Amenities</h4>
+      <label><input type="checkbox"> Shower</label>
+      <label><input type="checkbox"> Kitchen</label>
+      <label><input type="checkbox"> Laundry</label>
+
+      <h4>Transit Access</h4>
+      <label><input type="checkbox"> Distance to</label>
+      <label><input type="checkbox"> Stops in distance</label>
+
+      <h4>Nearby Facilities</h4>
+      <label><input type="checkbox"> Hospital</label>
+      <label><input type="checkbox"> School</label>
+      <label><input type="checkbox"> Grocery Store</label>
+    </div>
+  </div>
+
+  <div id="myOverlay" class="overlay" onclick="closeSidebar()"></div>
+
+  <div class="main">
+    <div class="map-container">
+      <div id="geocoder" class="geocoder"></div>
+      <div id="map"></div>
+    </div>
+
+    <div class="right-sidebar">
+      <h3>Sites Information</h3>
+      <p>More features will be added to this side panel once data is ready.</p>
+    </div>
+  </div>
+
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
+
+  <script>
+    const sidebar = document.getElementById("mySidebar");
+    const overlay = document.getElementById("myOverlay");
+
+    function openSidebar() {
+      sidebar.classList.add("active");
+      overlay.classList.add("active");
+      setTimeout(() => map.resize(), 300);
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove("active");
+      overlay.classList.remove("active");
+      setTimeout(() => map.resize(), 300);
+    }
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZ252ZWxleiIsImEiOiJjbTZzdGZzcWMwYjJzMm5wd2xmYnRyeHU0In0.1qw-r2WipRZcibgMfyoLJw';
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: [-122.335167, 47.608013],
+      zoom: 10
+    });
+
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl,
+      marker: true,
+      proximity: {
+        longitude: -122.335167,
+        latitude: 47.608013
+      }
+    });
+
+    document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+    const sqftSlider = document.getElementById('sqftSlider');
+    const sqftRangeText = document.getElementById('sqftRangeText');
+
+    noUiSlider.create(sqftSlider, {
+      start: [500, 2000],
+      connect: true,
+      step: 50,
+      range: {
+        min: 0,
+        max: 5000
+      },
+      format: {
+        to: value => Math.round(value),
+        from: value => parseInt(value)
+      }
+    });
+
+    sqftSlider.noUiSlider.on('update', function (values) {
+      sqftRangeText.textContent = `${values[0]} – ${values[1]} sq ft`;
+    });
+  </script>
+
+</body>
+</html>
