@@ -36,7 +36,7 @@
       background: none;
       border: none;
       color: white;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       cursor: pointer;
     }
 
@@ -119,7 +119,7 @@
     }
 
     .right-sidebar {
-      width: 300px;
+      width: 350px;
       height: 100%;
       background: #fff;
       overflow-y: auto;
@@ -193,7 +193,7 @@
     <div style="padding: 1rem;">
       <h3>Map Filters</h3>
 
-      <h4>Sq ft</h4>
+      <h4>Property Size</h4>
       <div id="sqftSlider"></div>
       <div class="range-display"><span id="sqftRangeText">500 – 2000 sq ft</span></div>
 
@@ -270,6 +270,7 @@
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
       marker: true,
+      placeholder: 'Add a site...',
       proximity: {
         longitude: -122.335167,
         latitude: 47.608013
@@ -296,7 +297,7 @@
     });
 
     sqftSlider.noUiSlider.on('update', function (values) {
-      sqftRangeText.textContent = `${values[0]} – ${values[1]} sq ft`;
+      sqftRangeText.textContent = `${values[0]} sq. ft. – ${values[1]} sq. ft.`;
     });
   </script>
 
