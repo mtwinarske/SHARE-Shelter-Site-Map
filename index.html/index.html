@@ -159,7 +159,7 @@
 
   <div class="top-bar">
     <button class="filter-btn" onclick="openSidebar()">
-      <i class="fa fa-bars"></i> Filter
+      <i class="fa fa-bars"></i> Map Filters
     </button>
     <div class="nav-tabs">
       <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank" rel="noopener noreferrer">SHARE</a>
@@ -183,7 +183,7 @@
       <label><input type="checkbox"> Restrooms</label>
       <label><input type="checkbox"> Sewage</label>
 
-      <h4>Type</h4>
+      <h4>Shelter Type</h4>
       <label><input type="checkbox"> Indoor</label>
       <label><input type="checkbox"> Outdoor</label>
 
@@ -216,12 +216,52 @@
     </div>
   </div>
 
-  <!-- ABOUT SECTION -->
-  <div id="aboutSection" style="display:none; padding:2rem; max-width:800px; margin:auto; background:white; font-family:Raleway, sans-serif;">
-    <h1>About This Project</h1>
-    <p>This page is currently under construction.</p>
-    <button onclick="hideAbout()" style="margin-top:2rem; padding:0.5rem 1rem;">← Back to Map</button>
-  </div>
+<!-- ABOUT SECTION -->
+<div id="aboutSection"
+     style="display:none; padding:2rem; max-width:900px; margin:auto;
+            background:white; font-family:Raleway, sans-serif; line-height:1.5;">
+  <h1 style="margin-top:0;">About the App</h1>
+
+  <p>
+    This web-based GIS application is a private tool for
+    <strong>SHARE/WHEEL</strong> staff to map, filter, and annotate
+    potential shelter sites across Seattle.  
+    It was developed through a partnership between SHARE/WHEEL and the
+    <em>GEOG 469 Senior Capstone</em> course at the University of Washington,
+    where student teams collaborate with community sponsors to deliver
+    professional-grade, real-world solutions.
+  </p>
+
+  <hr style="margin:2.5rem 0;">
+
+  <h2 style="margin-top:0;">About the Creators</h2>
+
+  <h4>
+    Miles Winarske
+  </h4>
+  <p></em>
+    Geographer &amp; Urban Planner (B.A. Geography – Data Science; Minor in Urban Planning &amp; Design)
+  <p></em>
+  <p>
+    This project taught me to work directly with a client, serving as a creator of ideas presented in multiple meetings with the sponsor. 
+    I worked to gather datasets used in this project, worked as the main coordinator with our sponsor, Michele Marchand.
+  </p>
+
+  <h4>Aditya Ayappa</h4>
+  <p>
+    Conducted key data science analysis for datasets
+  </p>
+
+  <h4>Ellie Velez</h4>
+  <p>
+    UX / UI lead responsible for front-end layout
+  </p>
+
+  <button onclick="hideAbout()"
+          style="margin-top:2.5rem; padding:0.6rem 1.2rem;">
+    ← Back to Map
+  </button>
+</div>
 
   <!-- USER GUIDE SECTION -->
   <div id="userGuideSection" style="display:none; padding:2rem; max-width:800px; margin:auto; background:white; font-family:Raleway, sans-serif;">
