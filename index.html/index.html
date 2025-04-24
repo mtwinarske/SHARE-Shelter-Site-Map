@@ -16,7 +16,6 @@
       font-family: Raleway, sans-serif;
       background: #f1f1f1;
     }
-
     .top-bar {
       position: fixed;
       top: 0;
@@ -31,7 +30,6 @@
       padding: 0 1rem;
       z-index: 1000;
     }
-
     .filter-btn {
       background: none;
       border: none;
@@ -39,23 +37,19 @@
       font-size: 1.1rem;
       cursor: pointer;
     }
-
     .nav-tabs {
       display: flex;
       gap: 1.5rem;
     }
-
     .nav-tabs a {
       color: white;
       text-decoration: none;
       font-size: 1rem;
       transition: color 0.3s ease;
     }
-
     .nav-tabs a:hover {
       color: #00bfff;
     }
-
     .sidebar {
       position: fixed;
       top: 43px;
@@ -66,29 +60,25 @@
       transform: translateX(-100%);
       transition: transform 0.3s ease;
       overflow-y: auto;
-      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
       z-index: 1001;
     }
-
     .sidebar.active {
       transform: translateX(0);
     }
-
     .overlay {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0,0,0,0.5);
       display: none;
       z-index: 1000;
     }
-
     .overlay.active {
       display: block;
     }
-
     .main {
       position: absolute;
       top: 43px;
@@ -98,17 +88,14 @@
       display: flex;
       z-index: 0;
     }
-
     .map-container {
       flex: 1;
       position: relative;
     }
-
     #map {
       width: 100%;
       height: 100%;
     }
-
     .geocoder {
       position: absolute;
       top: 10px;
@@ -117,54 +104,44 @@
       justify-content: center;
       z-index: 1002;
     }
-
     .right-sidebar {
       width: 350px;
       height: 100%;
       background: #fff;
       overflow-y: auto;
-      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
       z-index: 1;
       padding: 1rem;
     }
-
     .sidebar h4 {
       margin-top: 1rem;
       margin-bottom: 0.5rem;
     }
-
     .sidebar label {
       display: block;
       margin-bottom: 4px;
       font-size: 0.9rem;
     }
-
     .range-display {
       font-size: 0.9rem;
       margin-bottom: 1rem;
     }
-
     #sqftSlider {
       margin: 10px 0 20px;
       max-width: 85%;
     }
-
     .noUi-target {
       height: 7px;
       background: #ddd;
       border-radius: 3px;
     }
-
     .noUi-connect {
       background: #2196f3;
     }
-
     .noUi-horizontal .noUi-handle:before,
     .noUi-horizontal .noUi-handle:after {
       display: none;
-      content: none !important;
     }
-
     .noUi-horizontal .noUi-handle {
       width: 8px !important;
       height: 14px !important;
@@ -173,7 +150,7 @@
       border-radius: 3px;
       background: white;
       border: 2px solid #2196f3;
-      box-shadow: 0 0 2px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 0 2px rgba(0,0,0,0.15);
       cursor: pointer;
     }
   </style>
@@ -181,16 +158,18 @@
 <body>
 
   <div class="top-bar">
-    <button class="filter-btn" onclick="openSidebar()"><i class="fa fa-bars"></i> Filter</button>
+    <button class="filter-btn" onclick="openSidebar()">
+      <i class="fa fa-bars"></i> Filter
+    </button>
     <div class="nav-tabs">
-      <a href="#">SHARE</a>
-      <a href="#">User Guide</a>
-      <a href="#">About</a>
+      <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank" rel="noopener noreferrer">SHARE</a>
+      <a href="#" onclick="showUserGuide()">User Guide</a>
+      <a href="#" onclick="showAbout()">About</a>
     </div>
   </div>
 
   <div id="mySidebar" class="sidebar">
-    <div style="padding: 1rem;">
+    <div style="padding:1rem;">
       <h3>Map Filters</h3>
 
       <h4>Property Size</h4>
@@ -231,11 +210,24 @@
       <div id="geocoder" class="geocoder"></div>
       <div id="map"></div>
     </div>
-
     <div class="right-sidebar">
       <h3>Sites Information</h3>
       <p>More features will be added to this side panel once data is ready.</p>
     </div>
+  </div>
+
+  <!-- ABOUT SECTION -->
+  <div id="aboutSection" style="display:none; padding:2rem; max-width:800px; margin:auto; background:white; font-family:Raleway, sans-serif;">
+    <h1>About This Project</h1>
+    <p>This page is currently under construction.</p>
+    <button onclick="hideAbout()" style="margin-top:2rem; padding:0.5rem 1rem;">← Back to Map</button>
+  </div>
+
+  <!-- USER GUIDE SECTION -->
+  <div id="userGuideSection" style="display:none; padding:2rem; max-width:800px; margin:auto; background:white; font-family:Raleway, sans-serif;">
+    <h1>User Guide</h1>
+    <p>This page is currently under construction.</p>
+    <button onclick="hideUserGuide()" style="margin-top:2rem; padding:0.5rem 1rem;">← Back to Map</button>
   </div>
 
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
@@ -251,11 +243,28 @@
       overlay.classList.add("active");
       setTimeout(() => map.resize(), 300);
     }
-
     function closeSidebar() {
       sidebar.classList.remove("active");
       overlay.classList.remove("active");
       setTimeout(() => map.resize(), 300);
+    }
+    function showAbout() {
+      document.getElementById("aboutSection").style.display = "block";
+      document.getElementById("userGuideSection").style.display = "none";
+      document.querySelector(".main").style.display = "none";
+    }
+    function hideAbout() {
+      document.getElementById("aboutSection").style.display = "none";
+      document.querySelector(".main").style.display = "flex";
+    }
+    function showUserGuide() {
+      document.getElementById("userGuideSection").style.display = "block";
+      document.getElementById("aboutSection").style.display = "none";
+      document.querySelector(".main").style.display = "none";
+    }
+    function hideUserGuide() {
+      document.getElementById("userGuideSection").style.display = "none";
+      document.querySelector(".main").style.display = "flex";
     }
 
     mapboxgl.accessToken = 'pk.eyJ1IjoiZ252ZWxleiIsImEiOiJjbTZzdGZzcWMwYjJzMm5wd2xmYnRyeHU0In0.1qw-r2WipRZcibgMfyoLJw';
@@ -271,34 +280,22 @@
       mapboxgl: mapboxgl,
       marker: true,
       placeholder: 'Add a site...',
-      proximity: {
-        longitude: -122.335167,
-        latitude: 47.608013
-      },
-      bbox: [-122.4594, 47.4919, -122.2244, 47.7341] // limit search results to Seattle
+      proximity: { longitude: -122.335167, latitude: 47.608013 },
+      bbox: [-122.4594, 47.4919, -122.2244, 47.7341]
     });
-
     document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
     const sqftSlider = document.getElementById('sqftSlider');
     const sqftRangeText = document.getElementById('sqftRangeText');
-
     noUiSlider.create(sqftSlider, {
       start: [500, 2000],
       connect: true,
       step: 50,
-      range: {
-        min: 0,
-        max: 5000
-      },
-      format: {
-        to: value => Math.round(value),
-        from: value => parseInt(value)
-      }
+      range: { min: 0, max: 5000 },
+      format: { to: v => Math.round(v), from: v => parseInt(v) }
     });
-
-    sqftSlider.noUiSlider.on('update', function (values) {
-      sqftRangeText.textContent = `${values[0]} sq. ft. – ${values[1]} sq. ft.`;
+    sqftSlider.noUiSlider.on('update', function(values) {
+      sqftRangeText.textContent = `${values[0]} – ${values[1]} sq ft`;
     });
   </script>
 
