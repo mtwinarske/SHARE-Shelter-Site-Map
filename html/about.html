@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Raleway, sans-serif;
+      background: #f1f1f1;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 43px;
+      background: #000;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1rem;
+      z-index: 1000;
+    }
+
+    .filter-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.1rem;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-tabs a {
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-tabs a:hover {
+      color: #00bfff;
+    }
+
+    .content {
+      margin-top: 60px;
+      max-width: 900px;
+      margin-inline: auto;
+      padding: 2rem;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div></div> <!-- Placeholder for alignment -->
+    <div class="nav-tabs">
+      <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank" rel="noopener noreferrer">SHARE</a>
+      <a href="user_guide.html">User Guide</a>
+      <a href="about.html">About</a>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1>About the App</h1>
+    <p>This GIS application was created in partnership with <strong>SHARE/WHEEL</strong> and the <em>GEOG 469 Senior Capstone</em> at the University of Washington. Its goal is to help identify and manage potential homeless shelter sites across Seattle.</p>
+
+    <hr>
+
+    <h2>About the Creators</h2>
+
+    <h4>Miles Winarske</h4>
+    <p>Geographer & Urban Planner. Managed communications with SHARE and led the visioning and data sourcing for this project.</p>
+
+    <h4>Aditya Ayappa</h4>
+    <p>Led technical development for filtering, scoring, and map integration.</p>
+
+    <h4>Ellie Velez</h4>
+    <p>UX/UI lead responsible for designing the map interface and ensuring a smooth user experience.</p>
+  </div>
+</body>
+</html>
