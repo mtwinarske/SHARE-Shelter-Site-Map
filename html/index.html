@@ -17,9 +17,40 @@
       background: #f1f1f1;
     }
 
-    .top-bar {
+    .header-bar {
       position: fixed;
       top: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background: #ffffff;
+      border-bottom: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      z-index: 1001;
+    }
+
+    .header-left .navbar-logo {
+      height: 36px;
+    }
+
+    .header-links a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      color: #333;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .header-links a:hover {
+      color: #007bff;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 50px;
       left: 0;
       right: 0;
       height: 43px;
@@ -56,12 +87,12 @@
       color: #00bfff;
     }
 
-    .sidebar {
+    .left-sidebar {
       position: fixed;
-      top: 43px;
+      top: 93px;
       left: 0;
       width: 300px;
-      height: calc(100% - 43px);
+      height: calc(100% - 93px);
       background: white;
       transform: translateX(-100%);
       transition: transform 0.3s ease;
@@ -70,7 +101,7 @@
       z-index: 1001;
     }
 
-    .sidebar.active {
+    .left-sidebar.active {
       transform: translateX(0);
     }
 
@@ -91,10 +122,10 @@
 
     .main {
       position: absolute;
-      top: 43px;
+      top: 93px;
       left: 0;
       right: 0;
-      height: calc(100vh - 43px);
+      height: calc(100vh - 93px);
       display: flex;
       z-index: 0;
     }
@@ -128,12 +159,12 @@
       padding: 1rem;
     }
 
-    .sidebar h4 {
+    .left-sidebar h4 {
       margin-top: 1rem;
       margin-bottom: 0.5rem;
     }
 
-    .sidebar label {
+    .left-sidebar label {
       display: block;
       margin-bottom: 4px;
       font-size: 0.9rem;
@@ -180,22 +211,30 @@
 </head>
 <body>
 
-  <div class="top-bar">
-    <button class="filter-btn" onclick="openSidebar()"><i class="fa fa-bars"></i> Filter</button>
-    <div class="nav-tabs">
+  <!-- Top header navbar -->
+  <div class="header-bar">
+    <div class="header-left">
+      <img src="'SHARE Logo.png'" alt="Share-Logo" class="navbar-logo">
+    </div>
+    <div class="header-links">
       <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank" rel="noopener noreferrer">SHARE</a>
       <a href="user_guide.html">User Guide</a>
       <a href="about.html">About</a>
     </div>
   </div>
 
-  <div id="mySidebar" class="sidebar">
+  <!-- Filter toolbar (second row) -->
+  <div class="top-bar">
+    <button class="filter-btn" onclick="openSidebar()"><i class="fa fa-bars"></i> Map Filters</button>
+  </div>
+
+  <div id="mySidebar" class="left-sidebar">
     <div style="padding: 1rem;">
       <h3>Map Filters</h3>
 
       <h4>Property Size</h4>
       <div id="sqftSlider"></div>
-      <div class="range-display"><span id="sqftRangeText">500 – 2000 sq ft</span></div>
+      <div class="range-display"><span id="sqftRangeText">0 – 2000 sq ft</span></div>
 
       <h4>Utilities</h4>
       <label><input type="checkbox"> Gas</label>
@@ -233,7 +272,7 @@
     </div>
 
     <div class="right-sidebar">
-      <h3>Sites Information</h3>
+      <h3>Sites Directory</h3>
       <p>More features will be added to this side panel once data is ready.</p>
     </div>
   </div>
