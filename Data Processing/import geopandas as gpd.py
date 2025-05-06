@@ -38,7 +38,7 @@ def generate_shelter_buffers(input_geojson, mile_radius):
 def transit_proximity_check(bus_stops_geojson_path, shelter_boxes_geojson_path, output_filename):
     """
     Takes in a GeoJSON file of bus stops and a GeoJSON file of shelter bounding boxes, and adds
-    the number of bus-stops within the bounding box t o the bounding box's properties.
+    the number of bus-stops within the bounding box to the bounding box's properties.
     """
     # Load shelter bounding boxes
     shelter_boxes = gpd.read_file(shelter_boxes_geojson_path)
