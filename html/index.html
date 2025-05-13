@@ -23,7 +23,7 @@
       left: 0;
       right: 0;
       height: 50px;
-      background: #ffffff;
+      background: linear-gradient(to right, #9d9d9d, #bdbdbd);
       border-bottom: 1px solid #ccc;
       display: flex;
       align-items: center;
@@ -47,14 +47,15 @@
     .header-links a:hover {
       color: #007bff;
     }
-
+  
     .top-bar {
       position: fixed;
       top: 50px;
       left: 0;
       right: 0;
       height: 43px;
-      background: #000;
+      background: #383838;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
       color: white;
       display: flex;
       justify-content: space-between;
@@ -64,10 +65,12 @@
     }
 
     .filter-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.1rem;
+      background: lightgray;
+      border: rgb(45, 45, 45);
+      border-radius: 5px;
+      padding: 2 2rem;
+      color: black;
+      font-size: 1rem;
       cursor: pointer;
     }
 
@@ -77,6 +80,10 @@
     }
 
     .nav-tabs a {
+      background: lightgray;
+      border: rgb(45, 45, 45);
+      border-radius: 5px;
+      padding: 2 2rem;
       color: white;
       text-decoration: none;
       font-size: 1rem;
@@ -84,7 +91,7 @@
     }
 
     .nav-tabs a:hover {
-      color: #00bfff;
+      color: #ffffff;
     }
 
     .left-sidebar {
@@ -220,6 +227,7 @@
       class="navbar-logo"
     />    </div>
     <div class="header-links">
+      <a href="index.html">Home</a>
       <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank" rel="noopener noreferrer">SHARE</a>
       <a href="user_guide.html">User Guide</a>
       <a href="about.html">About</a>
@@ -246,11 +254,11 @@
       <label><input type="checkbox"> Restrooms</label>
       <label><input type="checkbox"> Sewage</label>
 
-      <h4>Type</h4>
+      <h4>Shelter Type</h4>
       <label><input type="checkbox"> Indoor</label>
       <label><input type="checkbox"> Outdoor</label>
 
-      <h4>Amenities</h4>
+      <h4>On-Site Amenities</h4>
       <label><input type="checkbox"> Shower</label>
       <label><input type="checkbox"> Kitchen</label>
       <label><input type="checkbox"> Laundry</label>
@@ -259,10 +267,9 @@
       <label><input type="checkbox"> Distance to</label>
       <label><input type="checkbox"> Stops in distance</label>
 
-      <h4>Nearby Facilities</h4>
+      <h4>Nearby Public Facilities</h4>
       <label><input type="checkbox"> Hospital</label>
       <label><input type="checkbox"> School</label>
-      <label><input type="checkbox"> Grocery Store</label>
     </div>
   </div>
 
