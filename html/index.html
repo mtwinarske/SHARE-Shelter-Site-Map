@@ -31,6 +31,36 @@
     .noUi-connect { background: #2196f3; }
     .noUi-horizontal .noUi-handle { width: 8px !important; height: 14px !important; top: -3px !important; right: -6px !important; border-radius: 3px; background: white; border: 2px solid #2196f3; box-shadow: 0 0 2px rgba(0, 0, 0, 0.15); cursor: pointer; }
     .clear-btn { margin-top: 10px; background: #e74c3c; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; }
+
+    .right-panel { position: fixed; top: 43px; right: 0; width: 340px; height: calc(100% - 43px); background: #fff; box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); overflow-y: auto; z-index: 1001; padding: 1rem; }
+    .right-panel input[type="text"], .right-panel input[type="number"] {
+      width: 100%; margin: 0.25rem 0 0.75rem; padding: 6px; font-size: 0.9rem;
+    }
+    .right-panel ul { list-style: none; padding: 0; margin: 0 0 1rem; }
+    .right-panel li { padding: 0.5rem 0; border-bottom: 1px solid #ccc; cursor: pointer; }
+    .right-panel li strong { display: block; font-size: 1rem; margin-bottom: 2px; }
+    .right-panel button { margin-top: 0.5rem; padding: 6px 12px; font-size: 0.9rem; display: block; width: 100%; }
+    .checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+#addForm select {
+  margin-bottom: 1rem;
+}
+
+#addForm select {
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+#rightPanel > button {
+  margin-bottom: 1rem;
+}
+
+
   </style>
 </head>
 <body>
@@ -42,17 +72,49 @@
       <a href="about.html">About</a>
     </div>
   </div>
+
+  <div class="right-panel" id="rightPanel">
+    <input type="text" id="searchInput" placeholder="Search by name or notes">
+    <button onclick="showAddForm()">Add Shelter</button>
+    <ul id="shelterList"></ul>
+    <div id="shelterDetails"></div>
+    <div id="addForm" style="display: none;">
+      <select id="typeInput">
+        <option value="indoor">Indoor</option>
+        <option value="outdoor">Outdoor</option>
+      </select>
+      <div class="checkbox-group">
+        <label><input type="checkbox" id="gasInput"> Gas</label>
+        <label><input type="checkbox" id="waterInput"> Water</label>
+        <label><input type="checkbox" id="electricityInput"> Electricity</label>
+        <label><input type="checkbox" id="sewageInput"> Sewage</label>
+      </div>
+      <input type="number" id="sqftInput" placeholder="Square Footage">
+      <input type="text" id="amenitiesInput" placeholder="Amenities (comma-separated)">
+      <input type="text" id="nameInput" placeholder="Name">
+      <input type="text" id="notesInput" placeholder="Notes">
+      <input type="text" id="longitudeInput" placeholder="Longitude (e.g., -122.299)">
+      <input type="text" id="latitudeInput" placeholder="Latitude (e.g., 47.561)">
+      <button onclick="submitNewShelter()">Submit</button>
+      <button onclick="backToList()">Back</button>
+    </div>
+  </div>
+  
+  </div>
+
   <div id="mySidebar" class="sidebar">
     <h3>Map Filters</h3>
     <h4>Property Size</h4>
     <div id="sqftSlider"></div>
     <div class="range-display"><span id="sqftRangeText">500 – 2000 sq ft</span></div>
     <h4>Utilities</h4>
-    <label><input type="checkbox"> Gas</label>
-    <label><input type="checkbox"> Water</label>
-    <label><input type="checkbox"> Electricity</label>
-    <label><input type="checkbox"> Restrooms</label>
-    <label><input type="checkbox"> Sewage</label>
+    <div class="checkbox-group">
+      <label><input type="checkbox" id="gasInput"> Gas</label>
+      <label><input type="checkbox" id="waterInput"> Water</label>
+      <label><input type="checkbox" id="electricityInput"> Electricity</label>
+      <label><input type="checkbox" id="sewageInput"> Sewage</label>
+    </div>
+    
     <h4>Type</h4>
     <label><input type="checkbox"> Indoor</label>
     <label><input type="checkbox"> Outdoor</label>
@@ -62,6 +124,7 @@
     <label><input type="checkbox"> Laundry</label>
     <button class="clear-btn" onclick="clearFilters()">Clear Filters</button>
   </div>
+
   <div id="myOverlay" class="overlay" onclick="closeSidebar()"></div>
   <div class="main">
     <div class="map-container">
@@ -79,7 +142,7 @@
 
     function openSidebar() {
       sidebar.classList.add("active");
-      overlay.classList.add("active");
+      overlay.classList.add("active");ww
       setTimeout(() => map.resize(), 300);
     }
     function closeSidebar() {
@@ -109,10 +172,10 @@
     const sqftSlider = document.getElementById('sqftSlider');
     const sqftRangeText = document.getElementById('sqftRangeText');
     noUiSlider.create(sqftSlider, {
-      start: [500, 2000], connect: true, step: 50, range: { min: 0, max: 5000 },
+      start: [0, 5000], connect: true, step: 50, range: { min: 0, max: 5000 },
       format: { to: value => Math.round(value), from: value => parseInt(value) }
     });
-    sqftSlider.noUiSlider.on('update', function (values) {
+    sqftSlider.noUiSlider.on('change', function (values) {
       sqftRangeText.textContent = `${values[0]} sq. ft. – ${values[1]} sq. ft.`;
     });
 
@@ -121,6 +184,7 @@
         .then(response => response.json())
         .then(data => {
           allShelterData = data.features;
+          renderShelterList(allShelterData);
           map.addSource('shelters', { type: 'geojson', data: { type: 'FeatureCollection', features: allShelterData } });
           map.addLayer({ id: 'shelters-layer', type: 'circle', source: 'shelters', paint: {
             'circle-radius': 6, 'circle-color': '#007cbf', 'circle-stroke-width': 1, 'circle-stroke-color': '#fff'
@@ -185,6 +249,139 @@
     function capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
     }
+
+    function showAddForm() {
+  document.getElementById("addForm").style.display = "block";
+}
+
+function hideAddForm() {
+  document.getElementById("addForm").style.display = "none";
+}
+
+function submitNewShelter() {
+  const lng = parseFloat(document.getElementById("longitudeInput").value);
+const lat = parseFloat(document.getElementById("latitudeInput").value);
+if (isNaN(lng) || isNaN(lat)) {
+  alert("Please enter valid coordinates.");
+  return;
+}
+
+const newFeature = {
+  type: "Feature",
+  geometry: {
+    type: "Point",
+    coordinates: [lng, lat]
+  },
+  properties: {
+    shelter_type: document.getElementById("typeInput").value,
+    gas: document.getElementById("gasInput").checked,
+    water: document.getElementById("waterInput").checked,
+    electricity: document.getElementById("electricityInput").checked,
+    sewage: document.getElementById("sewageInput").checked,
+    square_footage: parseInt(document.getElementById("sqftInput").value),
+    amenities: document.getElementById("amenitiesInput").value.split(',').map(a => a.trim().toLowerCase()),
+    name: document.getElementById("nameInput").value.trim(),
+    notes: document.getElementById("notesInput").value.trim()
+  }
+};
+
+
+  allShelterData.push(newFeature);
+  map.getSource('shelters').setData({ type: 'FeatureCollection', features: allShelterData });
+
+  // Save to server
+  fetch('/save_shelter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newFeature)
+  })
+  .then(res => {
+    if (res.ok) {
+      alert("Shelter added successfully!");
+      backToList();
+    } else {
+      alert("Failed to save shelter.");
+    }
+  });
+}
+
+const shelterList = document.getElementById("shelterList");
+  const shelterDetails = document.getElementById("shelterDetails");
+  const searchInput = document.getElementById("searchInput");
+  const addForm = document.getElementById("addForm");
+  const addButton = document.querySelector("button[onclick='showAddForm()']");
+
+  function renderShelterList(features) {
+    shelterList.innerHTML = "";
+    shelterList.style.display = "block";
+    shelterDetails.style.display = "none";
+    addForm.style.display = "none";
+
+    features.forEach((feature) => {
+      const props = feature.properties;
+      const li = document.createElement("li");
+      li.innerHTML = `<strong>${props.name}</strong><div>${props.notes || "No notes"}</div>`;
+      li.onclick = () => showShelterDetails(feature);
+      shelterList.appendChild(li);
+    });
+  }
+
+  function showShelterDetails(feature) {
+    shelterList.style.display = "none";
+    addForm.style.display = "none";
+    shelterDetails.style.display = "block";
+    const p = feature.properties;
+    shelterDetails.innerHTML = `
+      <button onclick="backToList()">&larr; Back</button>
+      <h3>${p.name}</h3>
+      <p><strong>Type:</strong> ${p.shelter_type}</p>
+      <p><strong>Gas:</strong> ${p.gas}</p>
+      <p><strong>Water:</strong> ${p.water}</p>
+      <p><strong>Electricity:</strong> ${p.electricity}</p>
+      <p><strong>Sewage:</strong> ${p.sewage}</p>
+      <p><strong>Square Footage:</strong> ${p.square_footage}</p>
+      <p><strong>Amenities:</strong> ${p.amenities.join(', ')}</p>
+      <p><strong>Notes:</strong> ${p.notes}</p>
+    `;
+  }
+
+  function showAddForm() {
+  shelterList.style.display = "none";
+  shelterDetails.style.display = "none";
+  addForm.style.display = "block";
+
+  // Reset form fields
+  document.getElementById("typeInput").value = "indoor";
+  document.getElementById("gasInput").checked = false;
+  document.getElementById("waterInput").checked = false;
+  document.getElementById("electricityInput").checked = false;
+  document.getElementById("sewageInput").checked = false;
+  document.getElementById("sqftInput").value = "";
+  document.getElementById("amenitiesInput").value = "";
+  document.getElementById("nameInput").value = "";
+  document.getElementById("notesInput").value = "";
+  document.getElementById("longitudeInput").value = "";
+  document.getElementById("latitudeInput").value = "";
+}
+
+
+
+  function backToList() {
+    addForm.style.display = "none";
+    renderShelterList(allShelterData);
+  }
+
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase();
+    const filtered = allShelterData.filter(f => {
+      const name = f.properties.name?.toLowerCase() || "";
+      const notes = f.properties.notes?.toLowerCase() || "";
+      return name.includes(query) || notes.includes(query);
+    });
+    renderShelterList(filtered);
+  });
   </script>
+
+
 </body>
 </html>
