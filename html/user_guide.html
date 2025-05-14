@@ -10,30 +10,46 @@
     html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
       font-family: Raleway, sans-serif;
       background: #f1f1f1;
     }
 
-    .top-bar {
+    .header-bar {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      height: 43px;
-      background: #000;
-      color: white;
+      height: 50px;
+      background: linear-gradient(to right, #9d9d9d, #bdbdbd);
+      border-bottom: 1px solid #ccc;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       padding: 0 1rem;
-      z-index: 1000;
+      z-index: 1001;
+    }
+
+    .header-left .navbar-logo {
+      height: 36px;
+    }
+
+    .header-links a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      color: #333;
+      font-weight: 600;
+      font-size: 1rem;
     }
 
     .filter-btn {
       background: none;
-      border: none;
-      color: white;
-      font-size: 1.1rem;
+      border: rgb(45, 45, 45);
+      border-radius: 5px;
+      padding: 2 2rem;
+      color: black;
+      font-size: 1rem;
+      cursor: pointer;
     }
 
     .nav-tabs {
@@ -42,6 +58,10 @@
     }
 
     .nav-tabs a {
+      background: lightgray;
+      border: rgb(45, 45, 45);
+      border-radius: 5px;
+      padding: 2 2rem;
       color: white;
       text-decoration: none;
       font-size: 1rem;
@@ -49,7 +69,7 @@
     }
 
     .nav-tabs a:hover {
-      color: #00bfff;
+      color: #ffffff;
     }
 
     .content {
@@ -62,9 +82,14 @@
   </style>
 </head>
 <body>
-  <div class="top-bar">
-    <div></div> <!-- Placeholder for alignment -->
-    <div class="nav-tabs">
+  <div class="header-bar">
+    <div class="header-left">
+      <img
+      src="https://lh3.googleusercontent.com/SY1blAOE6Lh2XiIRr7KLwJsZIp3MFDHQd0l5QQ0rg4yQDD4sCRW8Rp_ZP1y7WU81afTxc_ToM6jw4yj1xWXfWww=w16383"
+      alt="Share Logo"
+      class="navbar-logo"
+    />    </div>
+    <div class="header-links">
       <a href="index.html">Home</a>
       <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank" rel="noopener noreferrer">SHARE</a>
       <a href="user_guide.html">User Guide</a>
