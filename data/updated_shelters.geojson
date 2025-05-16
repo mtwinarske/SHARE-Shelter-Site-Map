@@ -1,0 +1,117 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.331404,
+          47.602402
+        ]
+      },
+      "properties": {
+        "name": "517 3rd Avenue, Seattle, Washington 98104, United States",
+        "shelter_type": "indoor",
+        "gas": true,
+        "water": true,
+        "electricity": false,
+        "sewage": false,
+        "amenities": [
+          "shower",
+          "kitchen"
+        ],
+        "notes": "Test"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.34283,
+          47.619051
+        ]
+      },
+      "properties": {
+        "name": "113 Dexter Avenue North, Seattle, Washington 98109, United States",
+        "shelter_type": "indoor",
+        "gas": false,
+        "water": true,
+        "electricity": true,
+        "sewage": false,
+        "amenities": [
+          "kitchen",
+          "laundry"
+        ],
+        "notes": "Test"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.335246,
+          47.600729
+        ]
+      },
+      "properties": {
+        "name": "77 South Washington Street, Seattle, Washington 98104, United States",
+        "shelter_type": "indoor",
+        "gas": false,
+        "water": true,
+        "electricity": false,
+        "sewage": false,
+        "amenities": [
+          "kitchen"
+        ],
+        "notes": "Test"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.325388,
+          47.595377
+        ]
+      },
+      "properties": {
+        "name": "811 Maynard Avenue South, Seattle, Washington 98134, United States",
+        "shelter_type": "outdoor",
+        "gas": false,
+        "water": true,
+        "electricity": false,
+        "sewage": false,
+        "amenities": [
+          "kitchen"
+        ],
+        "notes": "Test"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.312374,
+          47.659262
+        ]
+      },
+      "properties": {
+        "name": "1415 Northeast 43rd Street, Seattle, Washington 98105, United States",
+        "shelter_type": "outdoor",
+        "gas": false,
+        "water": false,
+        "electricity": true,
+        "sewage": false,
+        "amenities": [
+          "kitchen"
+        ],
+        "notes": "Test"
+      }
+    }
+  ]
+}
