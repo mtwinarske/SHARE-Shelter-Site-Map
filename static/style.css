@@ -12,7 +12,7 @@
     left: 0;
     right: 0;
     height: 50px;
-    background: #ffffff;
+    background: linear-gradient(to right, #9d9d9d, #bdbdbd);
     border-bottom: 1px solid #ccc;
     display: flex;
     align-items: center;
