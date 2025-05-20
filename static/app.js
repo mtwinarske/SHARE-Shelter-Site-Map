@@ -283,7 +283,7 @@ document.getElementById("searchInput").addEventListener("input", (e) => {
 });
 
 
-// CAPTALIZE
+// Capitalize
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
