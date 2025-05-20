@@ -375,3 +375,24 @@
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.15);
     cursor: pointer;
   }
+
+  /* SCROLL FIX */
+
+#shelterList {
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.right-sidebar {
+  overflow-y: hidden;
+}
+
+#shelterList::-webkit-scrollbar {
+  width: 6px;
+}
+
+#shelterList::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
