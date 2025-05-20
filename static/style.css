@@ -13,7 +13,7 @@
     right: 0;
     height: 50px;
     background: linear-gradient(to right, #9d9d9d, #bdbdbd);
-    border-bottom: 1px solid #ccc;
+    border-bottom: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -35,21 +35,6 @@
   
   .header-links a:hover {
     color: #007bff;
-  }
-  
-  .top-bar {
-    position: fixed;
-    top: 50px;
-    left: 0;
-    right: 0;
-    height: 43px;
-    background: #000;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 1rem;
-    z-index: 1000;
   }
   
   .filter-btn {
