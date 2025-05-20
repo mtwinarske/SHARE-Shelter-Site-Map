@@ -53,11 +53,14 @@
   }
   
   .filter-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.1rem;
+    background: white;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    color: #333;
+    font-size: 1rem;
     cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
   
   .left-sidebar {
