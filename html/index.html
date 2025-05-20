@@ -16,26 +16,20 @@
 </head>
 <body>
 
-  <!-- Header -->
-  <div class="header-bar">
-    <div class="header-left">
-      <img src="../images/share-logo.png"
-           alt="Share Logo"
-           class="navbar-logo" />
-    </div>
-    <div class="header-links">
-      <a href="index.html">Home</a>
-      <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank">SHARE</a>
-      <a href="user_guide.html">User Guide</a>
-      <a href="about.html">About</a>
+  <!-- Info Sidebar -->
+  <div id="infoSidebar" class="left-sidebar">
+    <div style="padding: 1rem; text-align: center;">
+      <img src="/static/SHARE_logo.png" alt="SHARE Logo" style="max-width: 160px; height: auto; margin-bottom: 1rem;" />
+      <ul style="list-style: none; padding-left: 0; margin-top: 1rem;">
+        <li><a href="index.html">Map</a></li>
+        <li><a href="user_guide.html">User Guide</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="https://sites.google.com/sharewheel.org/index/home" target="_blank">SHARE</a></li>
+      </ul>
     </div>
   </div>
 
-  <button class="filter-btn" onclick="openSidebar()">
-    <i class="fa fa-sliders"></i>
-  </button>
-
-  <!-- Sidebar -->
+  <!-- Filter Sidebar -->
   <div id="mySidebar" class="left-sidebar">
     <div style="padding: 1rem;">
       <h3>Map Filters</h3>
@@ -72,11 +66,20 @@
   </div>
 
   <!-- Overlay -->
-  <div id="myOverlay" class="overlay" onclick="closeSidebar()"></div>
+  <div id="myOverlay" class="overlay" onclick="closeAllSidebars()"></div>
 
-  <!-- Map -->
+  <!-- Map Container -->
   <div class="main">
     <div class="map-container">
+      <!-- Side Buttons: INFO + FILTER -->
+      <button class="info-btn" onclick="openInfoSidebar()" title="Info & Navigation">
+        <i class="fa fa-info-circle"></i>
+      </button>
+
+      <button class="filter-btn" onclick="openSidebar()">
+        <i class="fa fa-sliders"></i>
+      </button>
+      <!-- MAP -->
       <div id="map"></div>
     </div>
 

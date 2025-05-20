@@ -3,19 +3,25 @@ let allShelterData = [];
 let currentShelterCoords = null;
 let currentShelterAddress = "";
 
-// MAP FILTER
-const sidebar = document.getElementById("mySidebar");
-const overlay = document.getElementById("myOverlay");
-
-function openSidebar() {
-  sidebar.classList.add("active");
-  overlay.classList.add("active");
+// INFO SIDEBAR
+function openInfoSidebar() {
+  document.getElementById("infoSidebar").classList.add("active");
+  document.getElementById("myOverlay").classList.add("active");
   setTimeout(() => map.resize(), 300);
 }
 
-function closeSidebar() {
-  sidebar.classList.remove("active");
-  overlay.classList.remove("active");
+// MAP FILTER SIDEBAR
+function openSidebar() {
+  document.getElementById("mySidebar").classList.add("active");
+  document.getElementById("myOverlay").classList.add("active");
+  setTimeout(() => map.resize(), 300);
+}
+
+// CLOSE BOTH SIDEBARS
+function closeAllSidebars() {
+  document.getElementById("mySidebar").classList.remove("active");
+  document.getElementById("infoSidebar").classList.remove("active");
+  document.getElementById("myOverlay").classList.remove("active");
   setTimeout(() => map.resize(), 300);
 }
 
