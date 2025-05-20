@@ -38,15 +38,15 @@
   
   .top-bar {
     position: fixed;
-    top: 50px;
+    top: 0;
     left: 0;
     right: 0;
     height: 43px;
-    background;
+    background: none;
     color: white;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: left;
     padding: 0 1rem;
     z-index: 1000;
   }
