@@ -4,384 +4,173 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SHARE Potential Shelter Sites</title>
+
+  <!-- External Libraries -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css" rel="stylesheet" />
   <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet" />
-  <style>
-    html, body { margin: 0; height: 100%; font-family: Raleway, sans-serif; background: #f1f1f1; }
-    .top-bar { position: fixed; top: 0; left: 0; right: 0; height: 43px; background: #000; color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 1rem; z-index: 1000; }
-    .filter-btn { background: none; border: none; color: white; font-size: 1.1rem; cursor: pointer; }
-    .nav-tabs { display: flex; gap: 1.5rem; }
-    .nav-tabs a { color: white; text-decoration: none; font-size: 1rem; transition: color 0.3s ease; }
-    .nav-tabs a:hover { color: #00bfff; }
-    .sidebar { position: fixed; top: 43px; left: 0; width: 300px; height: calc(100% - 43px); background: white; transform: translateX(-100%); transition: transform 0.3s ease; overflow-y: auto; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); z-index: 1001; padding: 1rem; }
-    .sidebar.active { transform: translateX(0); }
-    .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); display: none; z-index: 1000; }
-    .overlay.active { display: block; }
-    .main { position: absolute; top: 43px; left: 0; right: 0; height: calc(100vh - 43px); display: flex; z-index: 0; }
-    .map-container { flex: 1; position: relative; }
-    #map { width: 100%; height: 100%; }
-    .geocoder { position: absolute; top: 10px; width: 100%; display: flex; justify-content: center; z-index: 1002; }
-    .sidebar h4 { margin-top: 1rem; margin-bottom: 0.5rem; }
-    .sidebar label { display: block; margin-bottom: 4px; font-size: 0.9rem; }
-    .range-display { font-size: 0.9rem; margin-bottom: 1rem; }
-    #sqftSlider { margin: 10px 0 20px; max-width: 85%; }
-    .noUi-target { height: 7px; background: #ddd; border-radius: 3px; }
-    .noUi-connect { background: #2196f3; }
-    .noUi-horizontal .noUi-handle { width: 8px !important; height: 14px !important; top: -3px !important; right: -6px !important; border-radius: 3px; background: white; border: 2px solid #2196f3; box-shadow: 0 0 2px rgba(0, 0, 0, 0.15); cursor: pointer; }
-    .clear-btn { margin-top: 10px; background: #e74c3c; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-size: 0.9rem; }
 
-    .right-panel { position: fixed; top: 43px; right: 0; width: 340px; height: calc(100% - 43px); background: #fff; box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); overflow-y: auto; z-index: 1001; padding: 1rem; }
-    .right-panel input[type="text"], .right-panel input[type="number"] {
-      width: 100%; margin: 0.25rem 0 0.75rem; padding: 6px; font-size: 0.9rem;
-    }
-    .right-panel ul { list-style: none; padding: 0; margin: 0 0 1rem; }
-    .right-panel li { padding: 0.5rem 0; border-bottom: 1px solid #ccc; cursor: pointer; }
-    .right-panel li strong { display: block; font-size: 1rem; margin-bottom: 2px; }
-    .right-panel button { margin-top: 0.5rem; padding: 6px 12px; font-size: 0.9rem; display: block; width: 100%; }
-    .checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  margin-bottom: 0.75rem;
-}
-
-#addForm select {
-  margin-bottom: 1rem;
-}
-
-#addForm select {
-  margin-top: 1rem;
-  margin-bottom: 0.75rem;
-}
-
-#rightPanel > button {
-  margin-bottom: 1rem;
-}
-
-
-  </style>
+  <!-- Local CSS -->
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <div class="top-bar">
-    <button class="filter-btn" onclick="openSidebar()"><i class="fa fa-bars"></i> Filter</button>
-    <div class="nav-tabs">
-      <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank" rel="noopener noreferrer">SHARE</a>
+
+  <!-- Header -->
+  <div class="header-bar">
+    <div class="header-left">
+      <img src="https://lh3.googleusercontent.com/SY1blAOE6Lh2XiIRr7KLwJsZIp3MFDHQd0l5QQ0rg4yQDD4sCRW8Rp_ZP1y7WU81afTxc_ToM6jw4yj1xWXfWww=w16383"
+           alt="Share Logo"
+           class="navbar-logo" />
+    </div>
+    <div class="header-links">
+      <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank">SHARE</a>
       <a href="user_guide.html">User Guide</a>
       <a href="about.html">About</a>
     </div>
   </div>
 
-  <div class="right-panel" id="rightPanel">
-    <input type="text" id="searchInput" placeholder="Search by name or notes">
-    <button onclick="showAddForm()">Add Shelter</button>
-    <ul id="shelterList"></ul>
-    <div id="shelterDetails"></div>
-    <div id="addForm" style="display: none;">
-      <select id="typeInput">
-        <option value="indoor">Indoor</option>
-        <option value="outdoor">Outdoor</option>
-      </select>
-      <div class="checkbox-group">
-        <label><input type="checkbox" id="gasInput"> Gas</label>
-        <label><input type="checkbox" id="waterInput"> Water</label>
-        <label><input type="checkbox" id="electricityInput"> Electricity</label>
-        <label><input type="checkbox" id="sewageInput"> Sewage</label>
-      </div>
-      <input type="number" id="sqftInput" placeholder="Square Footage">
-      <input type="text" id="amenitiesInput" placeholder="Amenities (comma-separated)">
-      <input type="text" id="nameInput" placeholder="Name">
-      <input type="text" id="notesInput" placeholder="Notes">
-      <input type="text" id="longitudeInput" placeholder="Longitude (e.g., -122.299)">
-      <input type="text" id="latitudeInput" placeholder="Latitude (e.g., 47.561)">
-      <button onclick="submitNewShelter()">Submit</button>
-      <button onclick="backToList()">Back</button>
-    </div>
-  </div>
-  
+  <!-- Filter Top Bar -->
+  <div class="top-bar">
+    <button class="filter-btn" onclick="openSidebar()"><i class="fa fa-bars"></i> Map Filters</button>
   </div>
 
-  <div id="mySidebar" class="sidebar">
-    <h3>Map Filters</h3>
-    <h4>Property Size</h4>
-    <div id="sqftSlider"></div>
-    <div class="range-display"><span id="sqftRangeText">500 – 2000 sq ft</span></div>
-    <h4>Utilities</h4>
-    <div class="checkbox-group">
-      <label><input type="checkbox" id="gasInput"> Gas</label>
-      <label><input type="checkbox" id="waterInput"> Water</label>
-      <label><input type="checkbox" id="electricityInput"> Electricity</label>
-      <label><input type="checkbox" id="sewageInput"> Sewage</label>
+  <!-- Sidebar -->
+  <div id="mySidebar" class="left-sidebar">
+    <div style="padding: 1rem;">
+      <h3>Map Filters</h3>
+
+      <h4>Property Size</h4>
+      <div id="sqftSlider"></div>
+      <div class="range-display"><span id="sqftRangeText">0 – 2000 sq ft</span></div>
+
+      <!-- Utilities -->
+<!-- Utilities -->
+<h4>Utilities</h4>
+<label><input type="checkbox" id="gasFilter"> Gas</label>
+<label><input type="checkbox" id="waterFilter"> Water</label>
+<label><input type="checkbox" id="electricityFilter"> Electricity</label>
+<label><input type="checkbox" id="sewageFilter"> Sewage</label>
+
+<!-- Type -->
+<h4>Type</h4>
+<label><input type="checkbox" id="indoorFilter"> Indoor</label>
+<label><input type="checkbox" id="outdoorFilter"> Outdoor</label>
+
+<!-- Amenities -->
+<h4>Amenities</h4>
+<label><input type="checkbox" id="showerFilter"> Shower</label>
+<label><input type="checkbox" id="kitchenFilter"> Kitchen</label>
+<label><input type="checkbox" id="laundryFilter"> Laundry</label>
+
+
+<h4>Proximity to Bus Stops</h4>
+<div class="form-group">
+  <label for="minStopsInput">Minimum Bus Stops:</label>
+  <input type="number" id="minStopsInput" min="0" placeholder="e.g., 2">
+</div>
+<div class="form-group">
+  <label for="radiusInput">Radius (in miles):</label>
+  <input type="number" id="radiusInput" min="0.1" step="0.1" placeholder="e.g., 0.25">
+</div>
+
+
+<button id="clearFiltersBtn" class="clear-btn">Clear Filters</button>
+
+
     </div>
-    
-    <h4>Type</h4>
-    <label><input type="checkbox"> Indoor</label>
-    <label><input type="checkbox"> Outdoor</label>
-    <h4>Amenities</h4>
-    <label><input type="checkbox"> Shower</label>
-    <label><input type="checkbox"> Kitchen</label>
-    <label><input type="checkbox"> Laundry</label>
-    <button class="clear-btn" onclick="clearFilters()">Clear Filters</button>
   </div>
 
+  <!-- Overlay -->
   <div id="myOverlay" class="overlay" onclick="closeSidebar()"></div>
+
+  <!-- Map -->
   <div class="main">
     <div class="map-container">
-      <div id="geocoder" class="geocoder"></div>
       <div id="map"></div>
     </div>
+
+    <!-- Site Directory -->
+    <div class="right-sidebar">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="showTab('current')">Current Shelters</button>
+        <button class="tab-btn" onclick="showTab('add')">Add Shelter</button>
+      </div>
+    
+      <!-- Current Shelters-->
+      <div class="tab-content" id="tab-current">
+        <div id="shelterListView">
+          <h3>Current Shelters</h3>
+          <input type="text" id="searchInput" placeholder="Search by address..." class="search-box">
+          <ul id="shelterList" class="shelter-list"></ul>
+        </div>
+      
+        <div id="shelterDetails" style="display: none;">
+          <button class="back-button" onclick="backToList()">&larr; Back</button>
+          <div id="shelterDetailContent"></div>
+        </div>
+      </div>      
+    
+      <!-- Add Shelters -->
+      <div class="tab-content" id="tab-add" style="display: none;">
+        <h3>Add Shelter</h3>
+      
+        <p>Use the search box to enter an address:</p>
+        <div id="add-shelter-geocoder" class="geocoder-embed"></div>
+      
+        <div id="addForm" class="shelter-form">
+          <div class="form-group">
+            <p>Type</p>
+            <select id="typeInput">
+              <option value="indoor">Indoor</option>
+              <option value="outdoor">Outdoor</option>
+            </select>
+          </div>
+        
+          <div class="form-group">
+            <p>Utilities</p>
+            <div class="checkbox-row">
+              <label><input type="checkbox" id="gasInput"> Gas</label>
+              <label><input type="checkbox" id="waterInput"> Water</label>
+              <label><input type="checkbox" id="electricityInput"> Electricity</label>
+              <label><input type="checkbox" id="sewageInput"> Sewage</label>
+            </div>
+          </div>          
+        
+          <div class="form-group checkbox-group">
+            <p>Amenities</p>
+            <div class="checkbox-row">
+              <label><input type="checkbox" name="amenities" value="shower"> Shower</label>
+              <label><input type="checkbox" name="amenities" value="kitchen"> Kitchen</label>
+              <label><input type="checkbox" name="amenities" value="laundry"> Laundry</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <p>Square Footage</p>
+            <input type="number" id="sqftInput" placeholder="Enter square footage">
+          </div>
+          
+          <div class="form-group">
+            <p>Notes</p>
+            <textarea id="notesInput" rows="4" placeholder="Additional info..."></textarea>
+          </div>
+          <button type="button" class="submit-btn" onclick="submitNewShelter()">Submit Shelter</button>
+        </div>                
+      </div>            
+    </div>
   </div>
+
+  <!-- External Scripts -->
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
   <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
-  <script>
-    let allShelterData = [];
-    const sidebar = document.getElementById("mySidebar");
-    const overlay = document.getElementById("myOverlay");
-
-    function openSidebar() {
-      sidebar.classList.add("active");
-      overlay.classList.add("active");ww
-      setTimeout(() => map.resize(), 300);
-    }
-    function closeSidebar() {
-      sidebar.classList.remove("active");
-      overlay.classList.remove("active");
-      setTimeout(() => map.resize(), 300);
-    }
-
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZ252ZWxleiIsImEiOiJjbTZzdGZzcWMwYjJzMm5wd2xmYnRyeHU0In0.1qw-r2WipRZcibgMfyoLJw';
-    const map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [-122.335167, 47.608013],
-      zoom: 10
-    });
-
-    const geocoder = new MapboxGeocoder({
-      accessToken: mapboxgl.accessToken,
-      mapboxgl: mapboxgl,
-      marker: true,
-      placeholder: 'Add a site...',
-      proximity: { longitude: -122.335167, latitude: 47.608013 },
-      bbox: [-122.4594, 47.4919, -122.2244, 47.7341]
-    });
-    document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
-
-    const sqftSlider = document.getElementById('sqftSlider');
-    const sqftRangeText = document.getElementById('sqftRangeText');
-    noUiSlider.create(sqftSlider, {
-      start: [0, 5000], connect: true, step: 50, range: { min: 0, max: 5000 },
-      format: { to: value => Math.round(value), from: value => parseInt(value) }
-    });
-    sqftSlider.noUiSlider.on('change', function (values) {
-      sqftRangeText.textContent = `${values[0]} sq. ft. – ${values[1]} sq. ft.`;
-    });
-
-    map.on('load', () => {
-      fetch('../data/updated_shelters.geojson')
-        .then(response => response.json())
-        .then(data => {
-          allShelterData = data.features;
-          renderShelterList(allShelterData);
-          map.addSource('shelters', { type: 'geojson', data: { type: 'FeatureCollection', features: allShelterData } });
-          map.addLayer({ id: 'shelters-layer', type: 'circle', source: 'shelters', paint: {
-            'circle-radius': 6, 'circle-color': '#007cbf', 'circle-stroke-width': 1, 'circle-stroke-color': '#fff'
-          }});
-
-          map.on('click', 'shelters-layer', (e) => {
-            const props = e.features[0].properties;
-            const coords = e.features[0].geometry.coordinates;
-            let amenities = [];
-            try { amenities = JSON.parse(props.amenities || '[]'); } catch { amenities = props.amenities || []; }
-            const html = `<div style="max-width: 250px;"><h4>Selected Site</h4><p><strong>Type:</strong> ${props.shelter_type}</p><p><strong>Gas:</strong> ${props.gas}</p><p><strong>Water:</strong> ${props.water}</p><p><strong>Sewage:</strong> ${props.sewage}</p><p><strong>Square Footage:</strong> ${props.square_footage} sq ft</p><p><strong>Amenities:</strong> ${amenities.join(', ')}</p></div>`;
-            new mapboxgl.Popup().setLngLat(coords).setHTML(html).addTo(map);
-          });
-
-          map.on('mouseenter', 'shelters-layer', () => {
-            map.getCanvas().style.cursor = 'pointer';
-          });
-          map.on('mouseleave', 'shelters-layer', () => {
-            map.getCanvas().style.cursor = '';
-          });
-
-          setupFilters();
-        })
-        .catch(err => console.error('GeoJSON load error:', err));
-    });
-
-    function setupFilters() {
-      document.querySelectorAll('.sidebar input[type="checkbox"]').forEach(cb => cb.addEventListener('change', applyFilters));
-      sqftSlider.noUiSlider.on('update', applyFilters);
-    }
-
-    function clearFilters() {
-      document.querySelectorAll('.sidebar input[type="checkbox"]').forEach(cb => cb.checked = false);
-      sqftSlider.noUiSlider.set([0, 5000]);
-      map.getSource('shelters').setData({ type: 'FeatureCollection', features: allShelterData });
-    }
-
-    function applyFilters() {
-      const selectedTypes = getCheckedValues(['Indoor', 'Outdoor']);
-      const selectedUtilities = getCheckedValues(['Gas', 'Water', 'Electricity', 'Restrooms', 'Sewage']);
-      const selectedAmenities = getCheckedValues(['Shower', 'Kitchen', 'Laundry']);
-      const sqftRange = sqftSlider.noUiSlider.get().map(Number);
-
-      const filtered = allShelterData.filter(f => {
-        const p = f.properties;
-        if (selectedTypes.length && !selectedTypes.includes(capitalize(p.shelter_type))) return false;
-        for (let util of selectedUtilities) if (!p[util.toLowerCase()]) return false;
-        for (let amenity of selectedAmenities) if (!p.amenities.includes(amenity.toLowerCase())) return false;
-        return p.square_footage >= sqftRange[0] && p.square_footage <= sqftRange[1];
-      });
-
-      map.getSource('shelters').setData({ type: 'FeatureCollection', features: filtered });
-    }
-
-    function getCheckedValues(labels) {
-      return labels.filter(label => {
-        const el = Array.from(document.querySelectorAll('.sidebar label')).find(l => l.textContent.trim() === label);
-        return el?.querySelector('input')?.checked;
-      });
-    }
-
-    function capitalize(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-    }
-
-    function showAddForm() {
-  document.getElementById("addForm").style.display = "block";
-}
-
-function hideAddForm() {
-  document.getElementById("addForm").style.display = "none";
-}
-
-function submitNewShelter() {
-  const lng = parseFloat(document.getElementById("longitudeInput").value);
-const lat = parseFloat(document.getElementById("latitudeInput").value);
-if (isNaN(lng) || isNaN(lat)) {
-  alert("Please enter valid coordinates.");
-  return;
-}
-
-const newFeature = {
-  type: "Feature",
-  geometry: {
-    type: "Point",
-    coordinates: [lng, lat]
-  },
-  properties: {
-    shelter_type: document.getElementById("typeInput").value,
-    gas: document.getElementById("gasInput").checked,
-    water: document.getElementById("waterInput").checked,
-    electricity: document.getElementById("electricityInput").checked,
-    sewage: document.getElementById("sewageInput").checked,
-    square_footage: parseInt(document.getElementById("sqftInput").value),
-    amenities: document.getElementById("amenitiesInput").value.split(',').map(a => a.trim().toLowerCase()),
-    name: document.getElementById("nameInput").value.trim(),
-    notes: document.getElementById("notesInput").value.trim()
-  }
-};
 
 
-  allShelterData.push(newFeature);
-  map.getSource('shelters').setData({ type: 'FeatureCollection', features: allShelterData });
+<!-- ✅ Turf.js (required for proximity filters) -->
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
-  // Save to server
-  fetch('/save_shelter', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newFeature)
-  })
-  .then(res => {
-    if (res.ok) {
-      alert("Shelter added successfully!");
-      backToList();
-    } else {
-      alert("Failed to save shelter.");
-    }
-  });
-}
-
-const shelterList = document.getElementById("shelterList");
-  const shelterDetails = document.getElementById("shelterDetails");
-  const searchInput = document.getElementById("searchInput");
-  const addForm = document.getElementById("addForm");
-  const addButton = document.querySelector("button[onclick='showAddForm()']");
-
-  function renderShelterList(features) {
-    shelterList.innerHTML = "";
-    shelterList.style.display = "block";
-    shelterDetails.style.display = "none";
-    addForm.style.display = "none";
-
-    features.forEach((feature) => {
-      const props = feature.properties;
-      const li = document.createElement("li");
-      li.innerHTML = `<strong>${props.name}</strong><div>${props.notes || "No notes"}</div>`;
-      li.onclick = () => showShelterDetails(feature);
-      shelterList.appendChild(li);
-    });
-  }
-
-  function showShelterDetails(feature) {
-    shelterList.style.display = "none";
-    addForm.style.display = "none";
-    shelterDetails.style.display = "block";
-    const p = feature.properties;
-    shelterDetails.innerHTML = `
-      <button onclick="backToList()">&larr; Back</button>
-      <h3>${p.name}</h3>
-      <p><strong>Type:</strong> ${p.shelter_type}</p>
-      <p><strong>Gas:</strong> ${p.gas}</p>
-      <p><strong>Water:</strong> ${p.water}</p>
-      <p><strong>Electricity:</strong> ${p.electricity}</p>
-      <p><strong>Sewage:</strong> ${p.sewage}</p>
-      <p><strong>Square Footage:</strong> ${p.square_footage}</p>
-      <p><strong>Amenities:</strong> ${p.amenities.join(', ')}</p>
-      <p><strong>Notes:</strong> ${p.notes}</p>
-    `;
-  }
-
-  function showAddForm() {
-  shelterList.style.display = "none";
-  shelterDetails.style.display = "none";
-  addForm.style.display = "block";
-
-  // Reset form fields
-  document.getElementById("typeInput").value = "indoor";
-  document.getElementById("gasInput").checked = false;
-  document.getElementById("waterInput").checked = false;
-  document.getElementById("electricityInput").checked = false;
-  document.getElementById("sewageInput").checked = false;
-  document.getElementById("sqftInput").value = "";
-  document.getElementById("amenitiesInput").value = "";
-  document.getElementById("nameInput").value = "";
-  document.getElementById("notesInput").value = "";
-  document.getElementById("longitudeInput").value = "";
-  document.getElementById("latitudeInput").value = "";
-}
-
-
-
-  function backToList() {
-    addForm.style.display = "none";
-    renderShelterList(allShelterData);
-  }
-
-  searchInput.addEventListener("input", () => {
-    const query = searchInput.value.toLowerCase();
-    const filtered = allShelterData.filter(f => {
-      const name = f.properties.name?.toLowerCase() || "";
-      const notes = f.properties.notes?.toLowerCase() || "";
-      return name.includes(query) || notes.includes(query);
-    });
-    renderShelterList(filtered);
-  });
-  </script>
-
-
+  <!-- Local JavaScript -->
+  <script src="/static/app.js" defer></script>
 </body>
 </html>
