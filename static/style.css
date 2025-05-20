@@ -241,7 +241,8 @@
 
   .back-button {
     background: none;
-    border: none;
+    border: #bdbdbd;
+    border-radius: 6px;
     color: #007bff;
     font-size: 0.95rem;
     font-weight: 500;
