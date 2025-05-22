@@ -26,6 +26,10 @@ def about_page():
 def guide_page():
     return send_from_directory("html", "user_guide.html")
 
+@app.route("/index.html")
+def guide_page():
+    return send_from_directory("html", "index.html")
+
 # User-end Website-based Github Commit Logic
 def push_to_github():
     try:
