@@ -14,7 +14,7 @@ GEOJSON_PATH = BASE_DIR / "data" / "updated_shelters.geojson"
 
 @app.route("/")
 def index():
-    return send_from_directory("html", "index.html")
+    return send_from_directory("html", "home.html")
 
 
 @app.route("/about.html")
@@ -26,10 +26,13 @@ def about_page():
 def guide_page():
     return send_from_directory("html", "user_guide.html")
 
+@app.route("/home.html")
+def home_page():
+    return send_from_directory("html", "home.html")
+
 # User-end Website-based Github Commit Logic
 def push_to_github():
     try:
-        # Set Git identity
         subprocess.run(["git",
                         "config",
                         "--global",
@@ -41,18 +44,15 @@ def push_to_github():
                         "user.email",
                         "bot@sharesitemap.org"], check=True)
 
-        # Stage the updated geojson file
         subprocess.run(["git",
                         "add",
                         "data/updated_shelters.geojson"], check=True)
 
-        # Commit with a standard message
         subprocess.run(["git",
                         "commit",
                         "-m",
                         "Add new shelter via site submission"], check=True)
 
-        # Push to GitHub using the personal access token
         repo_url = f"https://{os.environ['GITHUB_TOKEN']}@github.com/{os.environ['GITHUB_USERNAME']}/{os.environ['GITHUB_REPO']}.git"
         subprocess.run(["git",
                         "push",
@@ -65,7 +65,6 @@ def push_to_github():
     except Exception as e:
         print(f"Unexpected error during Git push: {e}")
 
-# Save shelter data #
 @app.route("/save_shelter", methods=["POST"])
 def save_shelter():
     try:
@@ -88,8 +87,6 @@ def save_shelter():
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
-
-# Serve GeoJSON
 
 
 @app.route("/data/<path:filename>")
