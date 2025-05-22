@@ -60,7 +60,7 @@ const addGeocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken,
   mapboxgl: mapboxgl,
   marker: true,
-  placeholder: 'Search for a location...',
+  placeholder: 'Search for address...',
   bbox: [-122.4594, 47.4919, -122.2244, 47.7341]
 });
 
@@ -239,15 +239,17 @@ function showShelterDetails(feature) {
 
   const p = feature.properties;
   const content = `
-    <h3>${p.name}</h3>
-    <p><strong>Type:</strong> ${capitalize(p.shelter_type)}</p>
-    <p><strong>Gas:</strong> ${p.gas}</p>
-    <p><strong>Water:</strong> ${p.water}</p>
-    <p><strong>Electricity:</strong> ${p.electricity}</p>
-    <p><strong>Sewage:</strong> ${p.sewage}</p>
-    <p><strong>Square Footage:</strong> ${p.square_footage || 'N/A'}</p>
-    <p><strong>Amenities:</strong> ${Array.isArray(p.amenities) ? p.amenities.join(', ') : p.amenities}</p>
-    <p><strong>Notes:</strong> ${p.notes || 'None'}</p>
+    <table class="shelter-detail-table">
+      <tr><th>Name</th><td>${p.name}</td></tr>
+      <tr><th>Type</th><td>${capitalize(p.shelter_type)}</td></tr>
+      <tr><th>Gas</th><td>${p.gas}</td></tr>
+      <tr><th>Water</th><td>${p.water}</td></tr>
+      <tr><th>Electricity</th><td>${p.electricity}</td></tr>
+      <tr><th>Sewage</th><td>${p.sewage}</td></tr>
+      <tr><th>Square Footage</th><td>${p.square_footage || 'N/A'}</td></tr>
+      <tr><th>Amenities</th><td>${Array.isArray(p.amenities) ? p.amenities.join(', ') : p.amenities}</td></tr>
+      <tr><th>Notes</th><td>${p.notes || 'None'}</td></tr>
+    </table>
   `;
   document.getElementById("shelterDetailContent").innerHTML = content;
 }
