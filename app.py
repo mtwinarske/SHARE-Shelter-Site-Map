@@ -17,16 +17,16 @@ def index():
     return send_from_directory("html", "home.html")
 
 
-@app.route("/about")
+@app.route("/about.html")
 def about_page():
     return send_from_directory("html", "about.html")
 
 
-@app.route("/user-guide")
+@app.route("/user_guide.html")
 def guide_page():
     return send_from_directory("html", "user_guide.html")
 
-@app.route("/home")
+@app.route("/home.html")
 def home_page():
     return send_from_directory("html", "home.html")
 
