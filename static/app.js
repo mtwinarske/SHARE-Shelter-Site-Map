@@ -190,7 +190,7 @@ function renderShelterList(features) {
 
     li.innerHTML = `
       <div class="shelter-item-title">${name}</div>
-      <div class="shelter-item-sub">Type: ${type}</div>
+      <div class="shelter-item-sub">${type}</div>
     `;
     li.onclick = () => showShelterDetails(feature);
     shelterList.appendChild(li);
@@ -227,7 +227,7 @@ function showShelterDetails(feature) {
       source: 'selected-shelter',
       paint: {
         'circle-radius': 10,
-        'circle-color': '#ff6600',
+        'circle-color': '#eb0000',
         'circle-stroke-width': 2,
         'circle-stroke-color': '#fff'
       }
