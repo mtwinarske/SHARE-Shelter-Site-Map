@@ -30,6 +30,7 @@ def guide_page():
 def home_page():
     return send_from_directory("html", "home.html")
 
+
 # User-end Website-based Github Commit Logic
 def push_to_github():
     try:
@@ -64,6 +65,7 @@ def push_to_github():
         print(f"Git command failed: {e}")
     except Exception as e:
         print(f"Unexpected error during Git push: {e}")
+
 
 @app.route("/save_shelter", methods=["POST"])
 def save_shelter():
