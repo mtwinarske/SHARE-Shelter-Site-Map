@@ -33,105 +33,6 @@
     {
       "type": "Feature",
       "properties": {
-        "shelter_type": "outdoor",
-        "gas": false,
-        "water": false,
-        "electricity": true,
-        "sewage": true,
-        "square_footage": 1794,
-        "amenities": [
-          "beds",
-          "kitchen",
-          "wifi",
-          "laundry"
-        ],
-        "name": "Shelter#2",
-        "notes": "to be added"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.39540948056468,
-          47.5577013683943
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "shelter_type": "outdoor",
-        "gas": false,
-        "water": false,
-        "electricity": true,
-        "sewage": false,
-        "square_footage": 4574,
-        "amenities": [
-          "showers"
-        ],
-        "name": "Shelter#3",
-        "notes": "to be added"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.31161382641214,
-          47.534449974504284
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "shelter_type": "indoor",
-        "gas": true,
-        "water": true,
-        "electricity": false,
-        "sewage": true,
-        "square_footage": 782,
-        "amenities": [
-          "beds",
-          "computers"
-        ],
-        "name": "Shelter#4",
-        "notes": "to be added"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.40145148050053,
-          47.68856453239234
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "shelter_type": "indoor",
-        "gas": false,
-        "water": true,
-        "electricity": true,
-        "sewage": true,
-        "square_footage": 3117,
-        "amenities": [
-          "beds",
-          "computers",
-          "wifi",
-          "kitchen"
-        ],
-        "name": "Shelter#5",
-        "notes": "to be added"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.36184909697167,
-          47.69331728501669
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
         "shelter_type": "indoor",
         "gas": true,
         "water": true,
@@ -919,56 +820,6 @@
       "type": "Feature",
       "properties": {
         "shelter_type": "outdoor",
-        "gas": true,
-        "water": true,
-        "electricity": true,
-        "sewage": false,
-        "square_footage": 2899,
-        "amenities": [
-          "showers",
-          "computers",
-          "wifi",
-          "kitchen"
-        ],
-        "name": "Shelter#38",
-        "notes": "to be added"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.35921886684746,
-          47.61804447547505
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "shelter_type": "outdoor",
-        "gas": false,
-        "water": false,
-        "electricity": false,
-        "sewage": false,
-        "square_footage": 2666,
-        "amenities": [
-          "showers",
-          "kitchen"
-        ],
-        "name": "Shelter#39",
-        "notes": "to be added"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.39651874626504,
-          47.58432531624385
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "shelter_type": "outdoor",
         "gas": false,
         "water": true,
         "electricity": true,
@@ -1081,6 +932,55 @@
         ],
         "name": "shelter#42",
         "notes": "This is teh goated shelter. It is simply lit."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.34163477490708,
+          47.67943160231889
+        ]
+      },
+      "properties": {
+        "shelter_type": "indoor",
+        "gas": true,
+        "water": false,
+        "electricity": true,
+        "sewage": true,
+        "square_footage": 4,
+        "amenities": [
+          "archery",
+          "laser tag",
+          "paragliding",
+          "spa",
+          "and surfing"
+        ],
+        "name": "Shelter#43",
+        "notes": "A pale breeze drifted through the quiet street, rustling leaves that had long since lost their green. A cat lounged on a warm windowsill, watching the world with eyes that had seen too much and cared too little. Somewhere in the distance, a radio crackled to life, playing a half-forgotten tune from the 80s, its melody bouncing softly off brick walls. The scent of rain clung to the pavement, though the skies were clear now\u2014fooling only those not paying attention. And under it all, the feeling that something small but meaningful was about to shift hung in the air like a held breath."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.326764,
+          47.595333
+        ]
+      },
+      "properties": {
+        "name": "Seattle Boulevard South, Seattle, Washington 98134, United States",
+        "shelter_type": "indoor",
+        "gas": false,
+        "water": true,
+        "electricity": false,
+        "sewage": false,
+        "amenities": [
+          "kitchen"
+        ],
+        "notes": "huge"
       }
     }
   ]
