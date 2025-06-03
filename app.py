@@ -91,11 +91,31 @@ def save_shelter():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
+# Serve GeoJSON
 @app.route("/data/<path:filename>")
 def data_files(filename):
     return send_from_directory("data", filename)
 
+@app.route("/delete_shelter", methods=["DELETE"])
+def delete_shelter():
+    try:
+        name = request.args.get("name")
+        if not name:
+            return jsonify({"status": "error", "message": "Name parameter missing"}), 400
+        if GEOJSON_PATH.exists():
+            with open(GEOJSON_PATH, "r", encoding="utf-8") as f:
+                geojson_data = json.load(f)
+        else:
+            geojson_data = {"type": "FeatureCollection", "features": []}
+        geojson_data["features"] = [
+            f for f in geojson_data["features"] if f["properties"]["name"] != name]
+        with open(GEOJSON_PATH, "w", encoding="utf-8") as f:
+            json.dump(geojson_data, f, indent=2)
+        return jsonify({"status": "success"}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, port=5000)
     app.run(host='0.0.0.0', port=port)
