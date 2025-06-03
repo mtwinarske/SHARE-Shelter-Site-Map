@@ -29,7 +29,7 @@ const sqftSlider = document.getElementById('sqftSlider');
 const sqftRangeText = document.getElementById('sqftRangeText');
 
 noUiSlider.create(sqftSlider, {
-  start: [500, 2000],
+  start: [0, 2500],
   connect: true,
   step: 50,
   range: {
@@ -60,7 +60,7 @@ const addGeocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken,
   mapboxgl: mapboxgl,
   marker: true,
-  placeholder: 'Search for address...',
+  placeholder: 'Search for an address...',
   bbox: [-122.4594, 47.4919, -122.2244, 47.7341]
 });
 
@@ -80,7 +80,6 @@ map.on('load', () => {
     .then(res => res.json())
     .then(data => {
       allShelterData = data.features;
-
       map.addSource('shelters', {
         type: 'geojson',
         data: {
@@ -89,23 +88,109 @@ map.on('load', () => {
         }
       });
 
-      map.addLayer({
-        id: 'shelters-layer',
-        type: 'circle',
-        source: 'shelters',
-        paint: {
-          'circle-radius': 7,
-          'circle-color': '#007bff',
-          'circle-stroke-width': 1,
-          'circle-stroke-color': '#fff'
+      map.loadImage('https://cdn-icons-png.flaticon.com/512/684/684908.png', (error, image) => {
+        if (error) throw error;
+        if (!map.hasImage('pin-icon')) {
+          map.addImage('pin-icon', image);
         }
+
+        map.addLayer({
+          id: 'shelters-layer',
+          type: 'symbol',
+          source: 'shelters',
+          layout: {
+            "icon-image": "pin-icon",
+            "icon-size": 0.05,
+            "icon-allow-overlap": true
+          }
+        });
+
+        renderShelterList(allShelterData);
+        setupFilters();
+        clearFilters();
       });
-      renderShelterList(allShelterData);
-    })
+     })
+
     .catch(err => {
       console.error("Failed to load existing shelter data:", err);
     });
 });
+
+
+  //  Add Parcels Source
+
+  map.addSource('parcels', {
+    type: 'geojson',
+    data: '/data/parcels_transit_scored_categorized.geojson'
+  });
+
+  // Add Parcel Layer
+
+  map.addLayer({
+    id: 'parcel-transit-score',
+    type: 'fill',
+    source: 'parcels',
+    paint: {
+      'fill-color': [
+        'match',
+        ['get', 'score_category'],
+        'No access', '#d3d3d3',
+        'Low access', '#f03b20',
+        'Medium access', '#feb24c',
+        'High access', '#78c679',
+        'Excellent access', '#238443',
+        '#cccccc' // fallback
+      ],
+      'fill-opacity': 0.6
+    }
+  });
+
+
+  // ZOOM TO PARCEL BOUNDS
+
+  fetch('/data/parcels_transit_scored_categorized.geojson')
+    .then(res => res.json())
+    .then(data => {
+      map.getSource('parcels').setData(data);
+
+      const bounds = new mapboxgl.LngLatBounds();
+      data.features.forEach(feature => {
+        const coords = feature.geometry.coordinates[0];
+        coords.forEach(coord => bounds.extend(coord));
+      });
+
+      map.fitBounds(bounds, { padding: 20 });
+    });
+
+
+
+  // Popup on click
+
+  map.on('click', 'parcel-transit-score', function (e) {
+    const props = e.features[0].properties;
+    new mapboxgl.Popup()
+      .setLngLat(e.lngLat)
+      .setHTML(`
+        <strong>Transit Score:</strong> ${props.transit_score}<br>
+        <strong>Nearby Stops:</strong> ${props.num_stops_within_800m}<br>
+        <strong>Access Level:</strong> ${props.score_category}
+      `)
+
+      .addTo(map);
+  });
+
+
+
+  map.on('mouseenter', 'parcel-transit-score', () => {
+    map.getCanvas().style.cursor = 'pointer';
+  });
+
+
+
+  map.on('mouseleave', 'parcel-transit-score', () => {
+    map.getCanvas().style.cursor = '';
+  });
+
 
 // TAB SWITCHING
 function showTab(tab) {
@@ -174,8 +259,26 @@ function submitNewShelter() {
   });
 }
 
-// SHELTER LIST
 
+function deleteShelter(name) {
+  const confirmed = window.confirm(`WARNING: You are about to permanently delete "${name}". This action CANNOT be undone. Proceed?`);
+  if (!confirmed) return;
+  fetch(`/delete_shelter?name=${encodeURIComponent(name)}`, { method: "DELETE" })
+    .then(res => res.ok ? res.json() : Promise.reject())
+    .then(() => {
+      allShelterData = allShelterData.filter(f => f.properties.name !== name);
+      map.getSource('shelters').setData({
+        type: 'FeatureCollection',
+        features: allShelterData
+      });
+      renderShelterList(allShelterData);
+      alert("Shelter deleted successfully.");
+    })
+    .catch(() => alert("Failed to delete shelter."));
+}
+
+
+// SHELTER LIST
 function renderShelterList(features) {
   document.getElementById("shelterListView").style.display = "block";
   document.getElementById("shelterDetails").style.display = "none";
@@ -190,8 +293,28 @@ function renderShelterList(features) {
 
     li.innerHTML = `
       <div class="shelter-item-title">${name}</div>
-      <div class="shelter-item-sub">${type}</div>
-    `;
+      <div class="shelter-item-header">
+      <div class="shelter-item-title">${name}</div>
+      <button class="delete-btn" data-name="${feature.properties.name}">×</button>
+    </div>
+
+    <div class="shelter-item-sub">Type: ${type}</div>
+  `;
+  li.querySelector(".delete-btn").onclick = (e) => {
+    e.stopPropagation(); // Prevents triggering the detail view
+    const shelterName = e.target.getAttribute("data-name");
+    fetch(`/delete_shelter?name=${encodeURIComponent(shelterName)}`, { method: "DELETE" })
+      .then(res => res.ok ? res.json() : Promise.reject())
+      .then(() => {
+        allShelterData = allShelterData.filter(f => f.properties.name !== shelterName);
+        renderShelterList(allShelterData);
+        map.getSource('shelters').setData({
+          type: 'FeatureCollection',
+          features: allShelterData
+        });
+      })
+      .catch(() => alert("Failed to delete shelter."));
+  };
     li.onclick = () => showShelterDetails(feature);
     shelterList.appendChild(li);
   });
@@ -227,7 +350,7 @@ function showShelterDetails(feature) {
       source: 'selected-shelter',
       paint: {
         'circle-radius': 10,
-        'circle-color': '#eb0000',
+        'circle-color': '#ff6600',
         'circle-stroke-width': 2,
         'circle-stroke-color': '#fff'
       }
@@ -263,9 +386,58 @@ function backToList() {
 }
 
 // FILTER
-// FUNCTIONS
-// HERE
+
 function setupFilters() {
+  document.querySelectorAll('#mySidebar input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', applyFilters);
+  });
+  sqftSlider.noUiSlider.on('update', applyFilters);
+}
+
+document.getElementById("clearFiltersBtn").addEventListener("click", () => {
+  document.querySelectorAll('#mySidebar input[type="checkbox"]').forEach(cb => cb.checked = false);
+  sqftSlider.noUiSlider.set([0, 5000]);
+  map.getSource('shelters').setData({ type: 'FeatureCollection', features: allShelterData });
+  renderShelterList(allShelterData);
+});
+
+
+function applyFilters() {
+
+  const sqftRange = sqftSlider.noUiSlider.get().map(Number);
+  const selectedTypes = [];
+  if (document.getElementById("indoorFilter").checked) selectedTypes.push("indoor");
+  if (document.getElementById("outdoorFilter").checked) selectedTypes.push("outdoor");
+
+  const selectedUtilities = {
+    gas: document.getElementById("gasFilter").checked,
+    water: document.getElementById("waterFilter").checked,
+    electricity: document.getElementById("electricityFilter").checked,
+    sewage: document.getElementById("sewageFilter").checked
+
+  };
+  const selectedAmenities = [];
+  if (document.getElementById("showerFilter").checked) selectedAmenities.push("shower");
+  if (document.getElementById("kitchenFilter").checked) selectedAmenities.push("kitchen");
+  if (document.getElementById("laundryFilter").checked) selectedAmenities.push("laundry");
+
+  const filtered = allShelterData.filter(f => {
+    const p = f.properties;
+    if (p.square_footage < sqftRange[0] || p.square_footage > sqftRange[1]) return false;
+    if (selectedTypes.length && !selectedTypes.includes(p.shelter_type?.toLowerCase())) return false;
+    for (let util in selectedUtilities) {
+      if (selectedUtilities[util] && !p[util]) return false;
+    }
+    if (selectedAmenities.length) {
+      const amenities = Array.isArray(p.amenities) ? p.amenities.map(a => a.toLowerCase()) : [];
+      for (let a of selectedAmenities) {
+        if (!amenities.includes(a)) return false;
+      }
+    }
+    return true;
+  });
+  map.getSource('shelters').setData({ type: 'FeatureCollection', features: filtered });
+  renderShelterList(filtered);
 }
 
 // RESET FORM AFTER SUBMIT
@@ -285,7 +457,8 @@ document.getElementById("searchInput").addEventListener("input", (e) => {
   const query = e.target.value.toLowerCase();
   const filtered = allShelterData.filter(f => {
     const name = f.properties.name?.toLowerCase() || "";
-    return name.includes(query);
+    const notes = f.properties.notes?.toLowerCase() || "";
+    return name.includes(query) || notes.includes(query);
   });
   renderShelterList(filtered);
 });
