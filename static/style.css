@@ -191,6 +191,21 @@ html, body {
   margin-top: 1rem;
 }
 
+.tab-content {
+  margin-top: 0;
+}
+
+
+#shelterListView {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.tab-content h3 {
+  margin-top: 0;
+}
+
+
 /* CURRENT SHELTER */
 
 .search-box {
