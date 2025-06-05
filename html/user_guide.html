@@ -3,107 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Guide</title>
+  <title>User Guide – SHARE Shelter Map</title>
+
+  <!-- External Libraries -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      font-family: Raleway, sans-serif;
-      background: #f1f1f1;
-    }
-
-    .top-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 43px;
-      background: #000;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 1rem;
-      z-index: 1000;
-    }
-
-    .filter-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.1rem;
-    }
-
-    .nav-tabs {
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    .nav-tabs a {
-      color: white;
-      text-decoration: none;
-      font-size: 1rem;
-      transition: color 0.3s ease;
-    }
-
-    .nav-tabs a:hover {
-      color: #00bfff;
-    }
-
-    .content {
-      margin-top: 60px;
-      max-width: 800px;
-      margin-inline: auto;
-      padding: 2rem;
-      background: white;
-    }
-
-    h2 {
-      margin-top: 2rem;
-      font-size: 1.4rem;
-    }
-
-    p {
-      line-height: 1.6;
-    }
-
-    hr {
-      border: none;
-      border-top: 1px solid #ccc;
-      margin: 2rem 0;
-    }
-
-    a.email, a.phone {
-      display: inline-block;
-      margin-top: 0.5rem;
-      color: #007bff;
-      text-decoration: none;
-    }
-
-    a.email:hover, a.phone:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <div class="top-bar">
-    <div></div>
-    <div class="nav-tabs">
-      <a href="home.html">Home</a>
-      <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank" rel="noopener noreferrer">SHARE</a>
-      <a href="user_guide.html">User Guide</a>
-      <a href="about.html">About</a>
-    </div>
-  </div>
 
+<!-- Left Sidebar Navigation -->
+<div id="infoSidebar" class="left-sidebar active">
+  <div style="padding: 1rem;">
+    <div style="padding-left: 20px; margin-bottom: 2rem;">
+      <img src="/static/SHARE_logo.png" alt="SHARE Logo" style="max-width: 200px;" />
+    </div>
+    <nav style="display: flex; flex-direction: column; gap: 1.5rem; padding-left: 20px;">
+      <a href="index.html" style="display: flex; align-items: center; gap: 0.75rem; font-weight: 600; text-decoration: none; color: #333;">
+        <i class="fa fa-home"></i> Home
+      </a>
+      <a href="about.html" style="display: flex; align-items: center; gap: 0.75rem; font-weight: 600; text-decoration: none; color: #333;">
+        <i class="fa fa-info-circle"></i> About
+      </a>
+      <a href="user_guide.html" style="display: flex; align-items: center; gap: 0.75rem; font-weight: 600; text-decoration: none; color: #333;">
+        <i class="fa fa-book"></i> User Guide
+      </a>
+      <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank" style="display: flex; align-items: center; gap: 0.75rem; font-weight: 600; text-decoration: none; color: #333;">
+        <i class="fa fa-external-link"></i> SHARE
+      </a>
+    </nav>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main" style="margin-left: 300px; padding: 2rem;">
   <div class="content">
     <h1>User Guide</h1>
 
     <h2>Getting Started</h2>
     <p>When you load the website, you'll see a few key navigation tools to help you explore the shelter map and site directory.</p>
     <hr>
+
     <h2>Left Sidebar Navigation</h2>
     <p>On the <strong>left-hand side</strong>, you’ll find two icons:</p>
     <ul>
@@ -117,6 +56,7 @@
       <li><strong>Map Filter Button:</strong> Clicking this opens a tab where you can filter shelter sites by specific features. This helps narrow down the map to only show sites that match your needs and criteria.</li>
     </ul>
     <hr>
+
     <h2>Right Sidebar: View & Add Sites</h2>
     <p>On the <strong>right-hand side</strong> of the map, you’ll see a sidebar with two main options:</p>
     <ul>
@@ -137,17 +77,21 @@
       <li><strong>Failed to submit</strong> (likely because a shelter already exists at that location)</li>
     </ul>
     <hr>
+
     <h2>Viewing Your Submitted Site</h2>
     <p>To view your newly added shelter, return to the <strong>Current Shelters</strong> tab and use the search bar to find it by address. The details you entered will appear with the shelter, including any notes shown at the bottom.</p>
     <p>As more shelters are added, use the search bar for quicker access. Selecting a shelter will automatically zoom the map to its location.</p>
     <hr>
+
     <h2>Need Help?</h2>
     <p>If you have any questions, feel free to contact us:</p>
     <p><a class="email" href="mailto:mtwinarske@gmail.com">mtwinarske@gmail.com</a><br>
-    <a class="phone" href="tel:+14252860695">(425) 286-0695</a></p>
+       <a class="phone" href="tel:+14252860695">(425) 286-0695</a></p>
     <p>Leave a message or send a text, and we’ll reply as soon as we can.</p>
 
     <p><strong>Thanks,<br>The SHARE Site Map Team</strong></p>
   </div>
+</div>
+
 </body>
 </html>
