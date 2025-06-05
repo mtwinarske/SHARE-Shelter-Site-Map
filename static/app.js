@@ -120,7 +120,7 @@ document.querySelector('.right-sidebar').scrollTop = 0;
         source: 'shelters',
         paint: {
           'circle-radius': 6,
-          'circle-color': '#000000', // black color
+          'circle-color': '#4470AD', // "Blue Yonder" color
           'circle-opacity': 0.8
         }
       });
@@ -513,7 +513,7 @@ function showShelterDetails(feature) {
       source: 'selected-shelter',
       paint: {
         'circle-radius': 10,
-        'circle-color': '#ff6600',
+        'circle-color': '#00e5ff',
         'circle-stroke-width': 2,
         'circle-stroke-color': '#fff'
       }
