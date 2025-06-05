@@ -13,12 +13,6 @@ GEOJSON_PATH = BASE_DIR / "data" / "updated_shelters.geojson"
 def index():
     return send_from_directory("html", "index.html")
 
-
-@app.route("/about.html")
-def about_page():
-    return send_from_directory("html", "about.html")
-
-
 @app.route("/user_guide.html")
 def guide_page():
     return send_from_directory("html", "user_guide.html")
