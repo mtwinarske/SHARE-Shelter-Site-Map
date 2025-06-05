@@ -48,7 +48,7 @@ const sqftSlider = document.getElementById('sqftSlider');
 const sqftRangeText = document.getElementById('sqftRangeText');
 
 noUiSlider.create(sqftSlider, {
-  start: [0, 5000],
+  start: [0, 2500],
   connect: true,
   step: 50,
   range: {
