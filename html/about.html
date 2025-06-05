@@ -4,73 +4,123 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>About</title>
+
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+  <!-- Basic styles -->
   <style>
     html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
       font-family: Raleway, sans-serif;
       background: #f1f1f1;
     }
 
-    .top-bar {
+    /* Floating hamburger button */
+    .info-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+      color: black;
+    }
+
+    .info-btn:hover {
+      color: #007bff;
+    }
+
+    /* Sidebar */
+    .left-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 300px;
+      height: 100%;
+      background: white;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      z-index: 1001;
+    }
+
+    .left-sidebar.active {
+      transform: translateX(0);
+    }
+
+    /* Overlay */
+    .overlay {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      height: 43px;
-      background: #000;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 1rem;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
       z-index: 1000;
     }
 
-    .filter-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.1rem;
+    .overlay.active {
+      display: block;
     }
 
-    .nav-tabs {
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    .nav-tabs a {
-      color: white;
-      text-decoration: none;
-      font-size: 1rem;
-      transition: color 0.3s ease;
-    }
-
-    .nav-tabs a:hover {
-      color: #00bfff;
-    }
-
+    /* Main content */
     .content {
-      margin-top: 60px;
       max-width: 900px;
-      margin-inline: auto;
+      margin: 100px auto; /* center vertically with some margin */
       padding: 2rem;
       background: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
   </style>
 </head>
 <body>
-  <div class="top-bar">
-    <div></div> <!-- Placeholder for alignment -->
-    <div class="nav-tabs">
-      <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank" rel="noopener noreferrer">SHARE</a>
-      <a href="user_guide.html">User Guide</a>
-      <a href="about.html">About</a>
-    </div>
-  </div>
 
+  <!-- Hamburger button -->
+  <button class="info-btn" onclick="openInfoSidebar()" title="Info & Navigation">
+    <i class="fa fa-bars"></i>
+  </button>
+
+  
+  <!-- Info Sidebar -->
+<div id="infoSidebar" class="left-sidebar">
+  <div style="padding: 1rem;">
+    <!-- Logo aligned with links (same left padding) -->
+    <div style="padding-left: 20px; margin-bottom: 2rem;">
+      <img src="/static/SHARE_logo.png" alt="SHARE Logo" style="max-width: 200px; height: auto;" />
+    </div>
+
+    <!-- Navigation links with spacing and same left padding -->
+    <nav style="display: flex; flex-direction: column; gap: 1.5rem; padding-left: 20px;">
+      <a href="index.html" style="display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; font-weight: 600; color: #333; text-decoration: none;">
+        <i class="fa fa-home"></i> Home
+      </a>
+      <a href="about.html" style="display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; font-weight: 600; color: #333; text-decoration: none;">
+        <i class="fa fa-info-circle"></i> About
+      </a>
+      <a href="user_guide.html" style="display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; font-weight: 600; color: #333; text-decoration: none;">
+        <i class="fa fa-book"></i> User Guide
+      </a>
+      <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank" style="display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; font-weight: 600; color: #333; text-decoration: none;">
+        <i class="fa fa-external-link"></i> SHARE
+      </a>
+    </nav>
+  </div>
+</div>
+
+  <!-- Overlay -->
+  <div id="myOverlay" class="overlay" onclick="closeInfoSidebar();"></div>
+
+  <!-- Main content -->
   <div class="content">
     <h1>About the App</h1>
     <p>This GIS application was created in partnership with <strong>SHARE/WHEEL</strong> and 
@@ -91,5 +141,19 @@
     <h4>Ellie Velez</h4>
     <p>UX/UI lead responsible for designing the map interface and ensuring a smooth user experience.</p>
   </div>
+
+  <!-- Sidebar JS -->
+  <script>
+    function openInfoSidebar() {
+      document.getElementById("infoSidebar").classList.add("active");
+      document.getElementById("myOverlay").classList.add("active");
+    }
+
+    function closeInfoSidebar() {
+      document.getElementById("infoSidebar").classList.remove("active");
+      document.getElementById("myOverlay").classList.remove("active");
+    }
+  </script>
+
 </body>
 </html>

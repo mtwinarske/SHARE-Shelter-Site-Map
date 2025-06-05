@@ -627,4 +627,13 @@ function capitalize(str) {
 }
 
 
+function openInfoSidebar() {
+  document.getElementById("infoSidebar").classList.add("active");
+  document.getElementById("myOverlay").classList.add("active");
+}
+
+function closeInfoSidebar() {
+  document.getElementById("infoSidebar").classList.remove("active");
+  document.getElementById("myOverlay").classList.remove("active");
+}
 

@@ -16,25 +16,6 @@
 </head>
 <body>
 
-  <!-- Header -->
-  <div class="header-bar">
-    <div class="header-left">
-      <img src="https://lh3.googleusercontent.com/SY1blAOE6Lh2XiIRr7KLwJsZIp3MFDHQd0l5QQ0rg4yQDD4sCRW8Rp_ZP1y7WU81afTxc_ToM6jw4yj1xWXfWww=w16383"
-           alt="Share Logo"
-           class="navbar-logo" />
-    </div>
-    <div class="header-links">
-      <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank">SHARE</a>
-      <a href="user_guide.html">User Guide</a>
-      <a href="about.html">About</a>
-    </div>
-  </div>
-
-  <!-- Filter Top Bar -->
-  <div class="top-bar">
-    <button class="filter-btn" onclick="openSidebar()"><i class="fa fa-bars"></i> Map Filters</button>
-  </div>
-
   <!-- Sidebar -->
   <div id="mySidebar" class="left-sidebar">
     <div style="padding: 1rem;">
@@ -45,65 +26,98 @@
       <div class="range-display"><span id="sqftRangeText">0 – 2000 sq ft</span></div>
 
       <!-- Utilities -->
-<!-- Utilities -->
-<h4>Utilities</h4>
-<label><input type="checkbox" id="gasFilter"> Gas</label>
-<label><input type="checkbox" id="waterFilter"> Water</label>
-<label><input type="checkbox" id="electricityFilter"> Electricity</label>
-<label><input type="checkbox" id="sewageFilter"> Sewage</label>
+      <h4>Utilities</h4>
+      <label><input type="checkbox" id="gasFilter"> Gas</label>
+      <label><input type="checkbox" id="waterFilter"> Water</label>
+      <label><input type="checkbox" id="electricityFilter"> Electricity</label>
+      <label><input type="checkbox" id="sewageFilter"> Sewage</label>
 
-<!-- Type -->
-<h4>Type</h4>
-<label><input type="checkbox" id="indoorFilter"> Indoor</label>
-<label><input type="checkbox" id="outdoorFilter"> Outdoor</label>
+      <!-- Type -->
+      <h4>Type</h4>
+      <label><input type="checkbox" id="indoorFilter"> Indoor</label>
+      <label><input type="checkbox" id="outdoorFilter"> Outdoor</label>
 
-<!-- Amenities -->
-<h4>Amenities</h4>
-<label><input type="checkbox" id="showerFilter"> Shower</label>
-<label><input type="checkbox" id="kitchenFilter"> Kitchen</label>
-<label><input type="checkbox" id="laundryFilter"> Laundry</label>
+      <!-- Amenities -->
+      <h4>Amenities</h4>
+      <label><input type="checkbox" id="showerFilter"> Shower</label>
+      <label><input type="checkbox" id="kitchenFilter"> Kitchen</label>
+      <label><input type="checkbox" id="laundryFilter"> Laundry</label>
 
-<h4>Transit Access Layer</h4>
-<div style="display: flex; align-items: center; gap: 8px;">
-  <label style="margin: 0;">
-    <input type="checkbox" id="transitLayerToggle"> Show Transit Access
-  </label>
-  <div id="transitInfoIcon"
-       style="cursor: pointer; color: #555; font-size: 12px; font-weight: bold; border: 1px solid #ccc; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; line-height: 1; user-select: none;"
-       title="Click for info">
-    ?
+      <h4>Transit Access Layer</h4>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <label style="margin: 0;">
+          <input type="checkbox" id="transitLayerToggle"> Show Transit Access
+        </label>
+        <div id="transitInfoIcon"
+             style="cursor: pointer; color: #555; font-size: 12px; font-weight: bold; border: 1px solid #ccc; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; line-height: 1; user-select: none;"
+             title="Click for info">
+          ?
+        </div>
+      </div>
+
+      <button id="clearFiltersBtn" class="clear-btn">Clear Filters</button>
+    </div>
+  </div>
+
+
+<!-- Info Sidebar -->
+<div id="infoSidebar" class="left-sidebar">
+  <div style="padding: 1rem;">
+    <!-- Logo aligned with links (same left padding) -->
+    <div style="padding-left: 20px; margin-bottom: 2rem;">
+      <img src="/static/SHARE_logo.png" alt="SHARE Logo" style="max-width: 200px; height: auto;" />
+    </div>
+
+    <!-- Navigation links with spacing and same left padding -->
+    <nav style="display: flex; flex-direction: column; gap: 1.5rem; padding-left: 20px;">
+      <a href="index.html" style="display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; font-weight: 600; color: #333; text-decoration: none;">
+        <i class="fa fa-home"></i> Home
+      </a>
+      <a href="about.html" style="display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; font-weight: 600; color: #333; text-decoration: none;">
+        <i class="fa fa-info-circle"></i> About
+      </a>
+      <a href="user_guide.html" style="display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; font-weight: 600; color: #333; text-decoration: none;">
+        <i class="fa fa-book"></i> User Guide
+      </a>
+      <a href="https://sites.google.com/sharewheel.org/index/home" target="_blank" style="display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; font-weight: 600; color: #333; text-decoration: none;">
+        <i class="fa fa-external-link"></i> SHARE
+      </a>
+    </nav>
   </div>
 </div>
 
 
 
-<button id="clearFiltersBtn" class="clear-btn">Clear Filters</button>
 
-
-    </div>
-  </div>
 
   <!-- Overlay -->
-  <div id="myOverlay" class="overlay" onclick="closeSidebar()"></div>
+  <div id="myOverlay" class="overlay" onclick="closeInfoSidebar(); closeSidebar();"></div>
 
   <!-- Map -->
   <div class="main">
     <div class="map-container">
       <div id="map"></div>
 
-      <!-- Transit Access Legend -->
-<div id="transitLegend" class="legend-box">
-  <strong>Transit Access</strong>
-  <div class="legend-items">
-    <div><span class="legend-color" style="background:#d3d3d3;"></span> No access</div>
-    <div><span class="legend-color" style="background:#f03b20;"></span> Low access</div>
-    <div><span class="legend-color" style="background:#feb24c;"></span> Medium access</div>
-    <div><span class="legend-color" style="background:#78c679;"></span> High access</div>
-    <div><span class="legend-color" style="background:#238443;"></span> Excellent access</div>
-  </div>
-</div>
+      <!-- Side Buttons: INFO + FILTER -->
+      <button class="info-btn" onclick="openInfoSidebar()" title="Info & Navigation">
+        <i class="fa fa-bars"></i>
+      </button>
 
-      
+      <button class="filter-btn" onclick="openSidebar()" title="Map Filters">
+        <i class="fa fa-filter"></i>
+      </button>
+
+      <!-- Transit Access Legend -->
+      <div id="transitLegend" class="legend-box">
+        <strong>Transit Access</strong>
+        <div class="legend-items">
+          <div><span class="legend-color" style="background:#d3d3d3;"></span> No access</div>
+          <div><span class="legend-color" style="background:#f03b20;"></span> Low access</div>
+          <div><span class="legend-color" style="background:#feb24c;"></span> Medium access</div>
+          <div><span class="legend-color" style="background:#78c679;"></span> High access</div>
+          <div><span class="legend-color" style="background:#238443;"></span> Excellent access</div>
+        </div>
+      </div>
     </div>
 
     <!-- Site Directory -->
@@ -186,8 +200,6 @@
             <p id="busStopsAccessResult" style="margin-top: 4px;"></p>
           </div>
           
-          
-          
           <div class="form-group">
             <p>Notes</p>
             <textarea id="notesInput" rows="4" placeholder="Additional info..."></textarea>
@@ -198,16 +210,13 @@
     </div>
   </div>
 
-  
-
   <!-- External Scripts -->
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
   <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
 
-
-<!-- ✅ Turf.js (required for proximity filters) -->
-<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+  <!-- ✅ Turf.js (required for proximity filters) -->
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
   <!-- Local JavaScript -->
   <script src="/static/app.js" defer></script>

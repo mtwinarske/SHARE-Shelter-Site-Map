@@ -13,6 +13,10 @@ GEOJSON_PATH = BASE_DIR / "data" / "updated_shelters.geojson"
 def index():
     return send_from_directory("html", "index.html")
 
+@app.route('/<path:filename>')
+def static_html(filename):
+    return send_from_directory('html', filename)
+
 # Save shelter data
 @app.route("/save_shelter", methods=["POST"])
 def save_shelter():
@@ -68,5 +72,5 @@ def delete_shelter():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000
+    app.run(debug=True, port=5002
             )
