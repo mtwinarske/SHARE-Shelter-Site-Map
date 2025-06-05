@@ -99,11 +99,13 @@ if (geocoderContainer) {
 
 // MAP LOAD
 map.on('load', () => {
-document.querySelector('.right-sidebar').scrollTop = 0;
+  document.querySelector('.right-sidebar').scrollTop = 0;
+
   fetch('/data/updated_shelters.geojson')
     .then(res => res.json())
     .then(data => {
       allShelterData = data.features;
+
       map.addSource('shelters', {
         type: 'geojson',
         data: {
@@ -132,64 +134,60 @@ document.querySelector('.right-sidebar').scrollTop = 0;
         renderShelterList(allShelterData);
         setupFilters();
         clearFilters();
-      })
-      .catch(err => {
-        console.error("Failed to load existing shelter data:", err);
+
+        map.addSource('parcels', {
+          type: 'geojson',
+          data: '/data/transit_score_dissolved.geojson'
+        });
+
+        map.loadImage('https://cdn-icons-png.flaticon.com/128/4330/4330636.png', (error, image) => {
+          if (error) throw error;
+          if (!map.hasImage('bus-icon')) {
+            map.addImage('bus-icon', image);
+          }
+        });
+
+        map.loadImage('https://cdn-icons-png.flaticon.com/128/4006/4006511.png', (error, image) => {
+          if (error) throw error;
+          if (!map.hasImage('hospital-icon')) {
+            map.addImage('hospital-icon', image);
+          }
+        });
+
+        map.loadImage('https://cdn-icons-png.flaticon.com/128/5404/5404967.png', (error, image) => {
+          if (error) throw error;
+          if (!map.hasImage('school-icon')) {
+            map.addImage('school-icon', image);
+          }
+        });
+
+        map.addLayer({
+          id: 'parcel-transit-score',
+          type: 'fill',
+          source: 'parcels',
+          layout: {
+            visibility: 'none'
+          },
+          paint: {
+            'fill-color': [
+              'match',
+              ['get', 'score_category'],
+              'No access', '#d3d3d3',
+              'Low access', '#f03b20',
+              'Medium access', '#feb24c',
+              'High access', '#78c679',
+              'Excellent access', '#238443',
+              '#cccccc' // fallback
+            ],
+            'fill-opacity': 0.8
+          }
+        });
       });
-
-
-  //  Add Parcels Source
-
-  map.addSource('parcels', {
-    type: 'geojson',
-    data: '/data/transit_score_dissolved.geojson'
-  });
-
-  // Add Bus Stops Source
-
-  map.loadImage('https://cdn-icons-png.flaticon.com/128/4330/4330636.png', (error, image) => {
-    if (error) throw error;
-    if (!map.hasImage('bus-icon')) {
-      map.addImage('bus-icon', image);
-    }
-  });
-
-  map.loadImage('https://cdn-icons-png.flaticon.com/128/4006/4006511.png', (error, image) => {
-    if (error) throw error;
-    if (!map.hasImage('hospital-icon')) {
-      map.addImage('hospital-icon', image);
-    }
-  });
-
-  map.loadImage('https://cdn-icons-png.flaticon.com/128/5404/5404967.png', (error, image) => {
-    if (error) throw error;
-    if (!map.hasImage('school-icon')) {
-      map.addImage('school-icon', image);
-    }
-  });
-
-  // Add Parcel Layer
-  map.addLayer({
-    id: 'parcel-transit-score',
-    type: 'fill',
-    source: 'parcels',
-    layout: {
-      visibility: 'none'
-    },
-    paint: {
-      'fill-color': [
-        'match',
-        ['get', 'score_category'],
-        'No access', '#d3d3d3',
-        'Low access', '#f03b20',
-        'Medium access', '#feb24c',
-        'High access', '#78c679',
-        'Excellent access', '#238443',
-        '#cccccc' // fallback
-      ],
-      'fill-opacity': 0.8
-    }
-  });
+    })
+    .catch(err => {
+      console.error("Failed to load existing shelter data:", err);
+    });
+});
 
   document.getElementById('transitLayerToggle').checked = false
 

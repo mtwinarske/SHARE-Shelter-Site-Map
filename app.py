@@ -14,7 +14,7 @@ GEOJSON_PATH = BASE_DIR / "data" / "updated_shelters.geojson"
 
 @app.route("/")
 def index():
-    return send_from_directory("html", "home.html")
+    return send_from_directory("html", "index.html")
 
 
 @app.route("/about.html")
@@ -26,12 +26,11 @@ def about_page():
 def guide_page():
     return send_from_directory("html", "user_guide.html")
 
-@app.route("/home.html")
+@app.route("/index.html")
 def home_page():
-    return send_from_directory("html", "home.html")
+    return send_from_directory("html", "index.html")
 
 
-# User-end Website-based Github Commit Logic
 def push_to_github():
     try:
         subprocess.run(["git",
@@ -54,10 +53,16 @@ def push_to_github():
                         "-m",
                         "Add new shelter via site submission"], check=True)
 
-        repo_url = f"https://{os.environ['GITHUB_TOKEN']}@github.com/{os.environ['GITHUB_USERNAME']}/{os.environ['GITHUB_REPO']}.git"
-        subprocess.run(["git",
-                        "push",
-                        repo_url], check=True)
+        token = os.environ.get('GITHUB_TOKEN')
+        user = os.environ.get('GITHUB_USERNAME')
+        repo = os.environ.get('GITHUB_REPO')
+
+        if not all([token, user, repo]):
+            print("GitHub credentials not set properly in environment variables.")
+            return
+
+        repo_url = f"https://{token}@github.com/{user}/{repo}.git"
+        subprocess.run(["git", "push", repo_url], check=True)
 
         print("Successfully pushed to GitHub.")
 
@@ -117,5 +122,4 @@ def delete_shelter():
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, port=5000)
     app.run(host='0.0.0.0', port=port)
