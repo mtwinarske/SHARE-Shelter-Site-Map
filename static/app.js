@@ -2,6 +2,32 @@
 let allShelterData = [];
 let currentShelterCoords = null;
 let currentShelterAddress = "";
+let hospitalsData = null;
+let schoolsData = null;
+  
+  fetch('data/Seattle_Hospitals_converted.geojson')
+    .then(res => res.json())
+    .then(data => {
+      hospitalsData = data;
+    });
+  
+  fetch('data/Seattle_Public_Schools_converted.geojson')
+    .then(res => res.json())
+    .then(data => {
+      schoolsData = data;
+    });
+  
+let busStopsData = null;
+
+fetch('data/KCM_Bus_Stops.geojson')
+  .then(res => res.json())
+  .then(data => {
+    busStopsData = data;
+    // No need to add to map → will be used in JS only
+  });
+
+
+
 
 // MAP FILTER
 const sidebar = document.getElementById("mySidebar");
@@ -44,9 +70,9 @@ sqftSlider.noUiSlider.on('update', function (values) {
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ252ZWxleiIsImEiOiJjbTZzdGZzcWMwYjJzMm5wd2xmYnRyeHU0In0.1qw-r2WipRZcibgMfyoLJw';
 const map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/streets-v12',
+  style: 'mapbox://styles/mapbox/light-v11',
   center: [-122.335167, 47.608013],
-  zoom: 10
+  zoom: 12
 });
 
 // GEOCODER SETUP
@@ -70,6 +96,10 @@ if (geocoderContainer) {
 
 // MAP LOAD
 map.on('load', () => {
+
+  // Reset right sidebar scroll to top on load
+document.querySelector('.right-sidebar').scrollTop = 0;
+
   // 🏠 Load Shelter Data
   fetch('/data/updated_shelters.geojson')
     .then(res => res.json())
@@ -84,27 +114,20 @@ map.on('load', () => {
         }
       });
 
-      map.loadImage('https://cdn-icons-png.flaticon.com/512/684/684908.png', (error, image) => {
-        if (error) throw error;
-        if (!map.hasImage('pin-icon')) {
-          map.addImage('pin-icon', image);
+      map.addLayer({
+        id: 'shelters-layer',
+        type: 'circle',
+        source: 'shelters',
+        paint: {
+          'circle-radius': 6,
+          'circle-color': '#000000', // black color
+          'circle-opacity': 0.8
         }
-
-        map.addLayer({
-          id: 'shelters-layer',
-          type: 'symbol',
-          source: 'shelters',
-          layout: {
-            "icon-image": "pin-icon",
-            "icon-size": 0.05,
-            "icon-allow-overlap": true
-          }
-        });
-
-        renderShelterList(allShelterData);
-        setupFilters();
-        clearFilters();
       });
+
+      renderShelterList(allShelterData);
+      setupFilters();
+      clearFilters();
     })
     .catch(err => {
       console.error("Failed to load existing shelter data:", err);
@@ -113,14 +136,42 @@ map.on('load', () => {
   //  Add Parcels Source
   map.addSource('parcels', {
     type: 'geojson',
-    data: '/data/parcels_transit_scored_categorized.geojson'
+    data: '/data/transit_score_dissolved.geojson'
   });
+
+  // Add Bus Stops Source
+
+  map.loadImage('https://cdn-icons-png.flaticon.com/128/4330/4330636.png', (error, image) => {
+  if (error) throw error;
+  if (!map.hasImage('bus-icon')) {
+    map.addImage('bus-icon', image);
+  }
+});
+
+map.loadImage('https://cdn-icons-png.flaticon.com/128/4006/4006511.png', (error, image) => {
+  if (error) throw error;
+  if (!map.hasImage('hospital-icon')) {
+    map.addImage('hospital-icon', image);
+  }
+});
+
+map.loadImage('https://cdn-icons-png.flaticon.com/128/5404/5404967.png', (error, image) => {
+  if (error) throw error;
+  if (!map.hasImage('school-icon')) {
+    map.addImage('school-icon', image);
+  }
+});
+
+
 
   // Add Parcel Layer
   map.addLayer({
     id: 'parcel-transit-score',
     type: 'fill',
     source: 'parcels',
+    layout: {
+      visibility: 'none'
+    },
     paint: {
       'fill-color': [
         'match',
@@ -132,24 +183,30 @@ map.on('load', () => {
         'Excellent access', '#238443',
         '#cccccc' // fallback
       ],
-      'fill-opacity': 0.6
+      'fill-opacity': 0.8
     }
   });
 
-  // 🧭 Zoom to parcel bounds after loading data
-  fetch('/data/parcels_transit_scored_categorized.geojson')
-    .then(res => res.json())
-    .then(data => {
-      map.getSource('parcels').setData(data);
+  document.getElementById('transitLayerToggle').checked = false
 
-      const bounds = new mapboxgl.LngLatBounds();
-      data.features.forEach(feature => {
-        const coords = feature.geometry.coordinates[0];
-        coords.forEach(coord => bounds.extend(coord));
-      });
+  // Transit Layer Toggle Control
+document.getElementById('transitLayerToggle').addEventListener('change', function(e) {
+  const visibility = e.target.checked ? 'visible' : 'none';
+  map.setLayoutProperty('parcel-transit-score', 'visibility', visibility);
+});
 
-      map.fitBounds(bounds, { padding: 20 });
-    });
+// Show/hide legend with Transit layer
+document.getElementById('transitLayerToggle').addEventListener('change', function(e) {
+  const showLegend = e.target.checked;
+  document.getElementById('transitLegend').style.display = showLegend ? 'block' : 'none';
+});
+
+
+  // Transit Layer Description
+
+  document.getElementById('transitInfoIcon').addEventListener('click', function() {
+    alert("Transit Access Layer: This layer shows the relative accessibility of each parcel based on nearby bus stops. Categories range from 'No access' to 'Excellent access' based on the number of stops within an 800m walking distance.");
+  });
 
   // Popup on click
   map.on('click', 'parcel-transit-score', function (e) {
@@ -183,6 +240,45 @@ function showTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   const clickedBtn = document.querySelector(`[onclick="showTab('${tab}')"]`);
   if (clickedBtn) clickedBtn.classList.add('active');
+
+
+  // Also clear ALL nearby features buffers when switching tabs
+const bufferLayers = [
+  'allfeatures-hospitals-buffer-layer',
+  'allfeatures-schools-buffer-layer',
+  'allfeatures-busstops-buffer-layer',
+  'allfeatures-hospitals-points-layer',
+  'allfeatures-schools-points-layer',
+  'allfeatures-busstops-points-layer'
+];
+
+const bufferSources = [
+  'allfeatures-hospitals-buffer',
+  'allfeatures-schools-buffer',
+  'allfeatures-busstops-buffer',
+  'allfeatures-hospitals-points',
+  'allfeatures-schools-points',
+  'allfeatures-busstops-points'
+];
+
+bufferLayers.forEach(layerId => {
+  if (map.getLayer(layerId)) {
+    map.removeLayer(layerId);
+  }
+});
+
+bufferSources.forEach(sourceId => {
+  if (map.getSource(sourceId)) {
+    map.removeSource(sourceId);
+  }
+});
+
+// Also clear result text
+document.getElementById('allNearbyFeaturesResult').textContent = '';
+document.getElementById('hospitalAccessResult').textContent = '';
+document.getElementById('schoolAccessResult').textContent = '';
+document.getElementById('busStopsAccessResult').textContent = '';
+
 }
 
 // ADD SHELTER
@@ -247,6 +343,115 @@ function deleteShelter(name) {
     })
     .catch(() => alert("Failed to delete shelter."));
 }
+
+function checkNearbyFeatures(featureData, layerPrefix, iconName, radiusMeters, resultElementId) {
+  if (!currentShelterCoords) {
+    alert("Please select an address first.");
+    return 0;  // <— return 0 if no address
+  }
+
+  const shelterPoint = turf.point(currentShelterCoords);
+  const buffer = turf.buffer(shelterPoint, radiusMeters, { units: 'meters' });
+
+  // Find features inside buffer
+  let featuresInBuffer = [];
+
+  if (featureData) {
+    featureData.features.forEach(f => {
+      const pt = turf.point(f.geometry.coordinates);
+      if (turf.booleanPointInPolygon(pt, buffer)) {
+        featuresInBuffer.push(f);
+      }
+    });
+  }
+
+  // Show result
+  // Friendly layer name
+let layerName = '';
+if (resultElementId === 'hospitalAccessResult') layerName = 'hospitals';
+else if (resultElementId === 'schoolAccessResult') layerName = 'schools';
+else if (resultElementId === 'busStopsAccessResult') layerName = 'bus stops';
+
+document.getElementById(resultElementId).textContent = `${featuresInBuffer.length} ${layerName} within ${radiusMeters}m`;
+
+
+  // Plot buffer
+  const bufferSourceId = `${layerPrefix}-buffer`;
+  const bufferLayerId = `${layerPrefix}-buffer-layer`;
+
+  if (map.getSource(bufferSourceId)) {
+    map.getSource(bufferSourceId).setData(buffer);
+  } else {
+    map.addSource(bufferSourceId, {
+      type: 'geojson',
+      data: buffer
+    });
+
+    map.addLayer({
+      id: bufferLayerId,
+      type: 'fill',
+      source: bufferSourceId,
+      paint: {
+        'fill-color': '#ffa500',
+        'fill-opacity': 0.09,
+        'fill-outline-color': '#ffa500'
+      }
+    });
+  }
+
+  // Plot points inside buffer
+  const pointsGeoJSON = {
+    type: 'FeatureCollection',
+    features: featuresInBuffer
+  };
+
+  const pointsSourceId = `${layerPrefix}-points`;
+  const pointsLayerId = `${layerPrefix}-points-layer`;
+
+  if (map.getSource(pointsSourceId)) {
+    map.getSource(pointsSourceId).setData(pointsGeoJSON);
+  } else {
+    map.addSource(pointsSourceId, {
+      type: 'geojson',
+      data: pointsGeoJSON
+    });
+
+    map.addLayer({
+      id: pointsLayerId,
+      type: 'symbol',
+      source: pointsSourceId,
+      layout: {
+        'icon-image': iconName,
+        'icon-size': 0.15,
+        'icon-allow-overlap': true
+      }
+    });
+
+    // Move shelters-layer on top
+if (map.getLayer('shelters-layer')) {
+  map.moveLayer('shelters-layer');
+}
+
+  }
+
+  return featuresInBuffer.length;  // <— ADD THIS: return count to caller!
+}
+
+function checkAllNearbyFeatures() {
+  const radiusMeters = parseInt(document.getElementById('bufferRadiusInput').value) || 400;
+
+  // Run each layer and capture counts
+  const hospitalsCount = checkNearbyFeatures(hospitalsData, 'allfeatures-hospitals', 'hospital-icon', radiusMeters, 'hospitalAccessResult');
+  const schoolsCount = checkNearbyFeatures(schoolsData, 'allfeatures-schools', 'school-icon', radiusMeters, 'schoolAccessResult');
+  const busStopsCount = checkNearbyFeatures(busStopsData, 'allfeatures-busstops', 'bus-icon', radiusMeters, 'busStopsAccessResult');
+
+  // Build combined message
+  //const summaryText = `Features within the buffer: ${schoolsCount} schools, ${busStopsCount} bus stops, ${hospitalsCount} hospitals.`;
+
+  // Display it
+  //document.getElementById('allNearbyFeaturesResult').textContent = summaryText;
+}
+
 
 // SHELTER LIST
 function renderShelterList(features) {

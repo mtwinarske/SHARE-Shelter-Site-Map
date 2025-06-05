@@ -35,32 +35,6 @@
       "properties": {
         "shelter_type": "indoor",
         "gas": true,
-        "water": true,
-        "electricity": true,
-        "sewage": false,
-        "square_footage": 1149,
-        "amenities": [
-          "wifi",
-          "laundry",
-          "beds",
-          "kitchen"
-        ],
-        "name": "Shelter#6",
-        "notes": "to be added"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.34307821982112,
-          47.68258796745433
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "shelter_type": "indoor",
-        "gas": true,
         "water": false,
         "electricity": true,
         "sewage": true,
@@ -78,32 +52,6 @@
         "coordinates": [
           -122.30081308519934,
           47.636909667764854
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "shelter_type": "outdoor",
-        "gas": false,
-        "water": true,
-        "electricity": false,
-        "sewage": true,
-        "square_footage": 4172,
-        "amenities": [
-          "kitchen",
-          "beds",
-          "computers",
-          "laundry"
-        ],
-        "name": "Shelter#8",
-        "notes": "to be added"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.26603717382606,
-          47.68217117631145
         ]
       }
     },
@@ -1003,6 +951,51 @@
           "kitchen"
         ],
         "notes": "Has lots of restaurants"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.36544,
+          47.62394
+        ]
+      },
+      "properties": {
+        "name": "551 Elliott Avenue West, Seattle, Washington 98119, United States",
+        "shelter_type": "indoor",
+        "gas": false,
+        "water": true,
+        "electricity": true,
+        "sewage": false,
+        "amenities": [
+          "kitchen",
+          "laundry"
+        ],
+        "notes": "TEST_SHELTER"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.30037,
+          47.67166
+        ]
+      },
+      "properties": {
+        "name": "5756 25th Avenue Northeast, Seattle, Washington 98105, United States",
+        "shelter_type": "outdoor",
+        "gas": true,
+        "water": false,
+        "electricity": false,
+        "sewage": true,
+        "amenities": [
+          "kitchen"
+        ],
+        "notes": "Goat shelter"
       }
     }
   ]

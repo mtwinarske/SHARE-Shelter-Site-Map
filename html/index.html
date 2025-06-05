@@ -74,6 +74,19 @@
   <input type="number" id="radiusInput" min="0.1" step="0.1" placeholder="e.g., 0.25">
 </div>
 
+<h4>Transit Access Layer</h4>
+<div style="display: flex; align-items: center; gap: 8px;">
+  <label style="margin: 0;">
+    <input type="checkbox" id="transitLayerToggle"> Show Transit Access
+  </label>
+  <div id="transitInfoIcon"
+       style="cursor: pointer; color: #555; font-size: 12px; font-weight: bold; border: 1px solid #ccc; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; line-height: 1; user-select: none;"
+       title="Click for info">
+    ?
+  </div>
+</div>
+
+
 
 <button id="clearFiltersBtn" class="clear-btn">Clear Filters</button>
 
@@ -88,6 +101,20 @@
   <div class="main">
     <div class="map-container">
       <div id="map"></div>
+
+      <!-- Transit Access Legend -->
+<div id="transitLegend" class="legend-box">
+  <strong>Transit Access</strong>
+  <div class="legend-items">
+    <div><span class="legend-color" style="background:#d3d3d3;"></span> No access</div>
+    <div><span class="legend-color" style="background:#f03b20;"></span> Low access</div>
+    <div><span class="legend-color" style="background:#feb24c;"></span> Medium access</div>
+    <div><span class="legend-color" style="background:#78c679;"></span> High access</div>
+    <div><span class="legend-color" style="background:#238443;"></span> Excellent access</div>
+  </div>
+</div>
+
+      
     </div>
 
     <!-- Site Directory -->
@@ -150,6 +177,27 @@
             <p>Square Footage</p>
             <input type="number" id="sqftInput" placeholder="Enter square footage">
           </div>
+
+          <div class="form-group">
+            <p>Nearby Features</p>
+            
+            <p>
+              <label for="bufferRadiusInput" style="display: inline-block; margin-right: 8px;">Buffer radius (meters):</label>
+              <input type="number" id="bufferRadiusInput" value="400" min="50" step="50" style="width: 80px; display: inline-block;">
+            </p>
+            
+            <button type="button" class="submit-btn" onclick="checkAllNearbyFeatures()">Check Nearby Features</button>
+            
+            <!-- This is the combined result -->
+            <p id="allNearbyFeaturesResult" style="margin-top: 8px; font-weight: 500;"></p>
+          
+            <!-- These are the per-layer counts (needed for checkNearbyFeatures() to update them) -->
+            <p id="hospitalAccessResult" style="margin-top: 4px;"></p>
+            <p id="schoolAccessResult" style="margin-top: 4px;"></p>
+            <p id="busStopsAccessResult" style="margin-top: 4px;"></p>
+          </div>
+          
+          
           
           <div class="form-group">
             <p>Notes</p>
@@ -160,6 +208,8 @@
       </div>            
     </div>
   </div>
+
+  
 
   <!-- External Scripts -->
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
