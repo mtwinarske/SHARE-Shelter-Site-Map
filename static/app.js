@@ -4,47 +4,44 @@ let currentShelterCoords = null;
 let currentShelterAddress = "";
 let hospitalsData = null;
 let schoolsData = null;
-
-fetch('data/Seattle_Hospitals_converted.geojson')
-.then(res => res.json())
-.then(data => {
-  hospitalsData = data;
-});
-
-fetch('data/Seattle_Public_Schools_converted.geojson')
-.then(res => res.json())
-.then(data => {
-  schoolsData = data;
-});
-
+  
+  fetch('data/Seattle_Hospitals_converted.geojson')
+    .then(res => res.json())
+    .then(data => {
+      hospitalsData = data;
+    });
+  
+  fetch('data/Seattle_Public_Schools_converted.geojson')
+    .then(res => res.json())
+    .then(data => {
+      schoolsData = data;
+    });
+  
 let busStopsData = null;
 
 fetch('data/KCM_Bus_Stops.geojson')
-.then(res => res.json())
-.then(data => {
-busStopsData = data;
-// No need to add to map → will be used in JS only
-});
+  .then(res => res.json())
+  .then(data => {
+    busStopsData = data;
+    // No need to add to map → will be used in JS only
+  });
 
-// INFO SIDEBAR
-function openInfoSidebar() {
-  document.getElementById("infoSidebar").classList.add("active");
-  document.getElementById("myOverlay").classList.add("active");
-  setTimeout(() => map.resize(), 300);
-}
 
-// MAP FILTER SIDEBAR
+
+
+// MAP FILTER
+const sidebar = document.getElementById("mySidebar");
+const overlay = document.getElementById("myOverlay");
+
 function openSidebar() {
-  document.getElementById("mySidebar").classList.add("active");
-  document.getElementById("myOverlay").classList.add("active");
+  sidebar.classList.add("active");
+  overlay.classList.add("active");
   setTimeout(() => map.resize(), 300);
 }
 
-// CLOSE BOTH SIDEBARS
-function closeAllSidebars() {
-  document.getElementById("mySidebar").classList.remove("active");
-  document.getElementById("infoSidebar").classList.remove("active");
-  document.getElementById("myOverlay").classList.remove("active");
+function closeSidebar() {
+  sidebar.classList.remove("active");
+  overlay.classList.remove("active");
   setTimeout(() => map.resize(), 300);
 }
 
@@ -52,7 +49,7 @@ const sqftSlider = document.getElementById('sqftSlider');
 const sqftRangeText = document.getElementById('sqftRangeText');
 
 noUiSlider.create(sqftSlider, {
-  start: [0, 2500],
+  start: [0, 5000],
   connect: true,
   step: 50,
   range: {
@@ -73,9 +70,9 @@ sqftSlider.noUiSlider.on('update', function (values) {
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ252ZWxleiIsImEiOiJjbTZzdGZzcWMwYjJzMm5wd2xmYnRyeHU0In0.1qw-r2WipRZcibgMfyoLJw';
 const map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/streets-v12',
+  style: 'mapbox://styles/mapbox/light-v11',
   center: [-122.335167, 47.608013],
-  zoom: 10
+  zoom: 12
 });
 
 // GEOCODER SETUP
@@ -83,7 +80,7 @@ const addGeocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken,
   mapboxgl: mapboxgl,
   marker: true,
-  placeholder: 'Search for an address...',
+  placeholder: 'Search for a location...',
   bbox: [-122.4594, 47.4919, -122.2244, 47.7341]
 });
 
@@ -99,8 +96,11 @@ if (geocoderContainer) {
 
 // MAP LOAD
 map.on('load', () => {
-  document.querySelector('.right-sidebar').scrollTop = 0;
 
+  // Reset right sidebar scroll to top on load
+document.querySelector('.right-sidebar').scrollTop = 0;
+
+  // 🏠 Load Shelter Data
   fetch('/data/updated_shelters.geojson')
     .then(res => res.json())
     .then(data => {
@@ -114,80 +114,78 @@ map.on('load', () => {
         }
       });
 
-      map.loadImage('/static/pin-icon.png', (error, image) => {
-        if (error) throw error;
-        if (!map.hasImage('pin-icon')) {
-          map.addImage('pin-icon', image);
+      map.addLayer({
+        id: 'shelters-layer',
+        type: 'circle',
+        source: 'shelters',
+        paint: {
+          'circle-radius': 6,
+          'circle-color': '#000000', // black color
+          'circle-opacity': 0.8
         }
-
-        map.addLayer({
-          id: 'shelters-layer',
-          type: 'symbol',
-          source: 'shelters',
-          layout: {
-            "icon-image": "pin-icon",
-            "icon-size": 0.05,
-            "icon-allow-overlap": true
-          }
-        });
-
-        renderShelterList(allShelterData);
-        setupFilters();
-        clearFilters();
-
-        map.addSource('parcels', {
-          type: 'geojson',
-          data: '/data/transit_score_dissolved.geojson'
-        });
-
-        map.loadImage('https://cdn-icons-png.flaticon.com/128/4330/4330636.png', (error, image) => {
-          if (error) throw error;
-          if (!map.hasImage('bus-icon')) {
-            map.addImage('bus-icon', image);
-          }
-        });
-
-        map.loadImage('https://cdn-icons-png.flaticon.com/128/4006/4006511.png', (error, image) => {
-          if (error) throw error;
-          if (!map.hasImage('hospital-icon')) {
-            map.addImage('hospital-icon', image);
-          }
-        });
-
-        map.loadImage('https://cdn-icons-png.flaticon.com/128/5404/5404967.png', (error, image) => {
-          if (error) throw error;
-          if (!map.hasImage('school-icon')) {
-            map.addImage('school-icon', image);
-          }
-        });
-
-        map.addLayer({
-          id: 'parcel-transit-score',
-          type: 'fill',
-          source: 'parcels',
-          layout: {
-            visibility: 'none'
-          },
-          paint: {
-            'fill-color': [
-              'match',
-              ['get', 'score_category'],
-              'No access', '#d3d3d3',
-              'Low access', '#f03b20',
-              'Medium access', '#feb24c',
-              'High access', '#78c679',
-              'Excellent access', '#238443',
-              '#cccccc' // fallback
-            ],
-            'fill-opacity': 0.8
-          }
-        });
       });
+
+      renderShelterList(allShelterData);
+      setupFilters();
+      clearFilters();
     })
     .catch(err => {
       console.error("Failed to load existing shelter data:", err);
     });
+
+  //  Add Parcels Source
+  map.addSource('parcels', {
+    type: 'geojson',
+    data: '/data/transit_score_dissolved.geojson'
+  });
+
+  // Add Bus Stops Source
+
+  map.loadImage('https://cdn-icons-png.flaticon.com/128/4330/4330636.png', (error, image) => {
+  if (error) throw error;
+  if (!map.hasImage('bus-icon')) {
+    map.addImage('bus-icon', image);
+  }
 });
+
+map.loadImage('https://cdn-icons-png.flaticon.com/128/4006/4006511.png', (error, image) => {
+  if (error) throw error;
+  if (!map.hasImage('hospital-icon')) {
+    map.addImage('hospital-icon', image);
+  }
+});
+
+map.loadImage('https://cdn-icons-png.flaticon.com/128/5404/5404967.png', (error, image) => {
+  if (error) throw error;
+  if (!map.hasImage('school-icon')) {
+    map.addImage('school-icon', image);
+  }
+});
+
+
+
+  // Add Parcel Layer
+  map.addLayer({
+    id: 'parcel-transit-score',
+    type: 'fill',
+    source: 'parcels',
+    layout: {
+      visibility: 'none'
+    },
+    paint: {
+      'fill-color': [
+        'match',
+        ['get', 'score_category'],
+        'No access', '#d3d3d3',
+        'Low access', '#f03b20',
+        'Medium access', '#feb24c',
+        'High access', '#78c679',
+        'Excellent access', '#238443',
+        '#cccccc' // fallback
+      ],
+      'fill-opacity': 0.8
+    }
+  });
 
   document.getElementById('transitLayerToggle').checked = false
 
@@ -231,6 +229,7 @@ document.getElementById('transitLayerToggle').addEventListener('change', functio
     map.getCanvas().style.cursor = '';
   });
 });
+
 
 
 // TAB SWITCHING
@@ -281,7 +280,6 @@ document.getElementById('schoolAccessResult').textContent = '';
 document.getElementById('busStopsAccessResult').textContent = '';
 
 }
-
 
 // ADD SHELTER
 function submitNewShelter() {
@@ -366,7 +364,6 @@ function checkNearbyFeatures(featureData, layerPrefix, iconName, radiusMeters, r
       }
     });
   }
-
 
   // Show result
   // Friendly layer name
@@ -456,7 +453,6 @@ function checkAllNearbyFeatures() {
 }
 
 
-
 // SHELTER LIST
 function renderShelterList(features) {
   document.getElementById("shelterListView").style.display = "block";
@@ -471,60 +467,46 @@ function renderShelterList(features) {
     const type = capitalize(feature.properties.shelter_type || "Unknown");
 
     li.innerHTML = `
-      <div class="shelter-item-title">${name}</div>
-      <div class="shelter-item-header">
-      <div class="shelter-item-title">${name}</div>
-      <button class="delete-btn" data-name="${feature.properties.name}">×</button>
-    </div>
-    <div class="shelter-item-sub">Type: ${type}</div>
-  `;
+  <div class="shelter-item-header">
+    <div class="shelter-item-title">${name}</div>
+    <button class="delete-btn" data-name="${feature.properties.name}">×</button>
+  </div>
+  <div class="shelter-item-sub">Type: ${type}</div>
+`;
 
-  li.querySelector(".delete-btn").onclick = (e) => {
-    e.stopPropagation(); // Prevents triggering the detail view
-    const shelterName = e.target.getAttribute("data-name");
-  
-    fetch(`/delete_shelter?name=${encodeURIComponent(shelterName)}`, { method: "DELETE" })
-      .then(res => res.ok ? res.json() : Promise.reject())
-      .then(() => {
-        allShelterData = allShelterData.filter(f => f.properties.name !== shelterName);
-        renderShelterList(allShelterData);
-        map.getSource('shelters').setData({
-          type: 'FeatureCollection',
-          features: allShelterData
-        });
-      })
-      .catch(() => alert("Failed to delete shelter."));
-  };
+li.querySelector(".delete-btn").onclick = (e) => {
+  e.stopPropagation(); // Prevents triggering the detail view
+  const shelterName = e.target.getAttribute("data-name");
 
-      li.onclick = () => showShelterDetails(feature);
-      shelterList.appendChild(li);
-    });
-  }
+  fetch(`/delete_shelter?name=${encodeURIComponent(shelterName)}`, { method: "DELETE" })
+    .then(res => res.ok ? res.json() : Promise.reject())
+    .then(() => {
+      allShelterData = allShelterData.filter(f => f.properties.name !== shelterName);
+      renderShelterList(allShelterData);
+      map.getSource('shelters').setData({
+        type: 'FeatureCollection',
+        features: allShelterData
+      });
+    })
+    .catch(() => alert("Failed to delete shelter."));
+};
+
+
+
+    li.onclick = () => showShelterDetails(feature);
+    shelterList.appendChild(li);
+  });
+}
 
 // SHELTER DETAIL
-
 function showShelterDetails(feature) {
   const coords = feature.geometry.coordinates;
-
-  map.flyTo({
-    center: coords,
-    zoom: 15,
-    speed: 1
-  });
-
-  const highlightSource = {
-    type: 'FeatureCollection',
-    features: [feature]
-  };
-
+  map.flyTo({ center: coords, zoom: 15, speed: 1 });
+  const highlightSource = { type: 'FeatureCollection', features: [feature] };
   if (map.getSource('selected-shelter')) {
     map.getSource('selected-shelter').setData(highlightSource);
   } else {
-    map.addSource('selected-shelter', {
-      type: 'geojson',
-      data: highlightSource
-    });
-
+    map.addSource('selected-shelter', { type: 'geojson', data: highlightSource });
     map.addLayer({
       id: 'selected-shelter-layer',
       type: 'circle',
@@ -537,23 +519,19 @@ function showShelterDetails(feature) {
       }
     });
   }
-
   document.getElementById("shelterListView").style.display = "none";
   document.getElementById("shelterDetails").style.display = "block";
-
   const p = feature.properties;
   const content = `
-    <table class="shelter-detail-table">
-      <tr><th>Name</th><td>${p.name}</td></tr>
-      <tr><th>Type</th><td>${capitalize(p.shelter_type)}</td></tr>
-      <tr><th>Gas</th><td>${p.gas}</td></tr>
-      <tr><th>Water</th><td>${p.water}</td></tr>
-      <tr><th>Electricity</th><td>${p.electricity}</td></tr>
-      <tr><th>Sewage</th><td>${p.sewage}</td></tr>
-      <tr><th>Square Footage</th><td>${p.square_footage || 'N/A'}</td></tr>
-      <tr><th>Amenities</th><td>${Array.isArray(p.amenities) ? p.amenities.join(', ') : p.amenities}</td></tr>
-      <tr><th>Notes</th><td>${p.notes || 'None'}</td></tr>
-    </table>
+    <h3>${p.name}</h3>
+    <p><strong>Type:</strong> ${capitalize(p.shelter_type)}</p>
+    <p><strong>Gas:</strong> ${p.gas}</p>
+    <p><strong>Water:</strong> ${p.water}</p>
+    <p><strong>Electricity:</strong> ${p.electricity}</p>
+    <p><strong>Sewage:</strong> ${p.sewage}</p>
+    <p><strong>Square Footage:</strong> ${p.square_footage || 'N/A'}</p>
+    <p><strong>Amenities:</strong> ${Array.isArray(p.amenities) ? p.amenities.join(', ') : p.amenities}</p>
+    <p><strong>Notes:</strong> ${p.notes || 'None'}</p>
   `;
   document.getElementById("shelterDetailContent").innerHTML = content;
 }
@@ -567,7 +545,6 @@ function backToList() {
 }
 
 // FILTER
-
 function setupFilters() {
   document.querySelectorAll('#mySidebar input[type="checkbox"]').forEach(cb => {
     cb.addEventListener('change', applyFilters);
@@ -582,20 +559,16 @@ document.getElementById("clearFiltersBtn").addEventListener("click", () => {
   renderShelterList(allShelterData);
 });
 
-
 function applyFilters() {
-
   const sqftRange = sqftSlider.noUiSlider.get().map(Number);
   const selectedTypes = [];
   if (document.getElementById("indoorFilter").checked) selectedTypes.push("indoor");
   if (document.getElementById("outdoorFilter").checked) selectedTypes.push("outdoor");
-
   const selectedUtilities = {
     gas: document.getElementById("gasFilter").checked,
     water: document.getElementById("waterFilter").checked,
     electricity: document.getElementById("electricityFilter").checked,
     sewage: document.getElementById("sewageFilter").checked
-
   };
   const selectedAmenities = [];
   if (document.getElementById("showerFilter").checked) selectedAmenities.push("shower");
@@ -617,11 +590,11 @@ function applyFilters() {
     }
     return true;
   });
+
   map.getSource('shelters').setData({ type: 'FeatureCollection', features: filtered });
   renderShelterList(filtered);
 }
 
-// RESET FORM AFTER SUBMIT
 function resetAddForm() {
   document.getElementById("typeInput").value = "indoor";
   ["gasInput", "waterInput", "electricityInput", "sewageInput"].forEach(id => {
@@ -629,11 +602,11 @@ function resetAddForm() {
   });
   document.querySelectorAll('input[name="amenities"]').forEach(cb => cb.checked = false);
   document.getElementById("notesInput").value = "";
+  document.getElementById("sqftInput").value = "";
   currentShelterCoords = null;
   currentShelterAddress = "";
 }
 
-// LIVE SEARCH
 document.getElementById("searchInput").addEventListener("input", (e) => {
   const query = e.target.value.toLowerCase();
   if (!query) {
@@ -647,11 +620,11 @@ document.getElementById("searchInput").addEventListener("input", (e) => {
   });
   renderShelterList(filtered);
   map.getSource('shelters').setData({ type: 'FeatureCollection', features: filtered });
-
 });
 
-
-// Capitalize
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+
+

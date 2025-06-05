@@ -2,8 +2,6 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import json
 from pathlib import Path
-import os
-import subprocess
 
 app = Flask(__name__, static_folder="static")
 CORS(app)
@@ -11,67 +9,11 @@ CORS(app)
 BASE_DIR = Path(__file__).resolve().parent
 GEOJSON_PATH = BASE_DIR / "data" / "updated_shelters.geojson"
 
-
 @app.route("/")
 def index():
     return send_from_directory("html", "index.html")
 
-
-@app.route("/about.html")
-def about_page():
-    return send_from_directory("html", "about.html")
-
-
-@app.route("/user_guide.html")
-def guide_page():
-    return send_from_directory("html", "user_guide.html")
-
-@app.route("/index.html")
-def home_page():
-    return send_from_directory("html", "index.html")
-
-
-def push_to_github():
-    try:
-        subprocess.run(["git",
-                        "config",
-                        "--global",
-                        "user.name",
-                        "Render Auto Commit Bot"], check=True)
-        subprocess.run(["git",
-                        "config",
-                        "--global",
-                        "user.email",
-                        "bot@sharesitemap.org"], check=True)
-
-        subprocess.run(["git",
-                        "add",
-                        "data/updated_shelters.geojson"], check=True)
-
-        subprocess.run(["git",
-                        "commit",
-                        "-m",
-                        "Add new shelter via site submission"], check=True)
-
-        token = os.environ.get('GITHUB_TOKEN')
-        user = os.environ.get('GITHUB_USERNAME')
-        repo = os.environ.get('GITHUB_REPO')
-
-        if not all([token, user, repo]):
-            print("GitHub credentials not set properly in environment variables.")
-            return
-
-        repo_url = f"https://{token}@github.com/{user}/{repo}.git"
-        subprocess.run(["git", "push", repo_url], check=True)
-
-        print("Successfully pushed to GitHub.")
-
-    except subprocess.CalledProcessError as e:
-        print(f"Git command failed: {e}")
-    except Exception as e:
-        print(f"Unexpected error during Git push: {e}")
-
-
+# Save shelter data
 @app.route("/save_shelter", methods=["POST"])
 def save_shelter():
     try:
@@ -88,13 +30,10 @@ def save_shelter():
         with open(GEOJSON_PATH, "w", encoding="utf-8") as f:
             json.dump(geojson_data, f, indent=2)
 
-        push_to_github()
-
         return jsonify({"status": "success"}), 200
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
-
 
 # Serve GeoJSON
 @app.route("/data/<path:filename>")
@@ -107,19 +46,27 @@ def delete_shelter():
         name = request.args.get("name")
         if not name:
             return jsonify({"status": "error", "message": "Name parameter missing"}), 400
+
         if GEOJSON_PATH.exists():
             with open(GEOJSON_PATH, "r", encoding="utf-8") as f:
                 geojson_data = json.load(f)
         else:
             geojson_data = {"type": "FeatureCollection", "features": []}
+
         geojson_data["features"] = [
-            f for f in geojson_data["features"] if f["properties"]["name"] != name]
+            f for f in geojson_data["features"] if f["properties"]["name"] != name
+        ]
+
         with open(GEOJSON_PATH, "w", encoding="utf-8") as f:
             json.dump(geojson_data, f, indent=2)
+
         return jsonify({"status": "success"}), 200
+
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000
+            )

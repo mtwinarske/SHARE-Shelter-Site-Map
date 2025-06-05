@@ -997,26 +997,6 @@
         ],
         "notes": "Goat shelter"
       }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.292719,
-          47.614926
-        ]
-      },
-      "properties": {
-        "name": "1527 31st Avenue, Seattle, Washington 98122, United States",
-        "shelter_type": "indoor",
-        "gas": true,
-        "water": true,
-        "electricity": true,
-        "sewage": false,
-        "amenities": [],
-        "notes": ""
-      }
     }
   ]
 }
