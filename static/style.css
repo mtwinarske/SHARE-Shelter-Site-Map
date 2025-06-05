@@ -74,6 +74,48 @@ html, body {
   z-index: 1001;
 }
 
+.info-sidebar-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.info-logo {
+  max-width: 200px;
+  height: auto;
+  margin-bottom: 2rem;
+}
+
+.info-nav {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.info-nav a:hover {
+  background-color: #f0f0f0;
+  color: #007bff;
+}
+
+.info-nav i {
+  font-size: 1.1rem;
+}
+
 
 .left-sidebar.active {
   transform: translateX(0);
@@ -209,7 +251,8 @@ html, body {
 /* CURRENT SHELTER */
 
 .search-box {
-  width: 94.5%;
+  height: 20px;
+  width: 94%;
   padding: 8px;
   margin-bottom: 1rem;
   border-radius: 5px;
@@ -247,31 +290,65 @@ html, body {
   color: #666;
 }  
 
-#shelterDetails {
+.shelter-detail-table {
+  width: 100%;
+  border-collapse: collapse;
   margin-top: 0.5rem;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+  font-size: 0.95rem;
 }
 
-#shelterDetails h3,
-#shelterDetails p {
-  margin-top: 0.25rem;
-  margin-bottom: 0.25rem;
+.shelter-detail-table th,
+.shelter-detail-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  vertical-align: top;
+}
+
+.shelter-detail-table th {
+  width: 35%;
+  background-color: #f4f6f8;
+  font-weight: 600;
+  color: #333;
+}
+
+.shelter-detail-table td {
+  color: #444;
+}
+
+.shelter-detail-table tr:last-child td {
+  border-bottom: none;
 }
 
 .back-button {
   background: none;
-  border: none;
+  border: 1px solid #007bff;
+  border-radius: 999px;
   color: #007bff;
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  padding: 0;
-  margin: 0 0 0.5rem 0;
+  padding: 6px 16px;
+  margin: 0 0 0.25rem 0;
   display: inline-flex;
   align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.back-button::before {
+  content: '←';
+  font-size: 1rem;
 }
 
 .back-button:hover {
-  text-decoration: underline;
+  background-color: #e6f0ff;
+  color: #0056b3;
+  border-color: #0056b3;
 }
 
 /* NEW SHELTER FORM */

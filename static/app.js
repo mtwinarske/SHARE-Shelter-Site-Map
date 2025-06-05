@@ -28,7 +28,6 @@ fetch('data/KCM_Bus_Stops.geojson')
 
 
 
-
 // MAP FILTER
 const sidebar = document.getElementById("mySidebar");
 const overlay = document.getElementById("myOverlay");
@@ -70,7 +69,7 @@ sqftSlider.noUiSlider.on('update', function (values) {
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ252ZWxleiIsImEiOiJjbTZzdGZzcWMwYjJzMm5wd2xmYnRyeHU0In0.1qw-r2WipRZcibgMfyoLJw';
 const map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/satellite-streets-v12',
+  style: 'mapbox://styles/mapbox/streets-v12',
   center: [-122.335167, 47.608013],
   zoom: 12
 });
@@ -114,16 +113,14 @@ document.querySelector('.right-sidebar').scrollTop = 0;
         }
       });
 
-      map.addLayer({
-        id: 'shelters-layer',
-        type: 'circle',
-        source: 'shelters',
-        paint: {
-          'circle-radius': 6,
-          'circle-color': '#000000', // black color
-          'circle-opacity': 0.8
-        }
-      });
+      allShelterData.forEach((feature) => {
+        const coords = feature.geometry.coordinates;
+        const marker = new mapboxgl.Marker({ color: '#007bff' }) // default red marker
+          .setLngLat(coords)
+          .addTo(map)
+          .getElement()
+          .addEventListener("click", () => showShelterDetails(feature));
+      });      
 
       renderShelterList(allShelterData);
       setupFilters();
@@ -161,8 +158,6 @@ map.loadImage('https://cdn-icons-png.flaticon.com/128/5404/5404967.png', (error,
     map.addImage('school-icon', image);
   }
 });
-
-
 
   // Add Parcel Layer
   map.addLayer({
@@ -502,39 +497,32 @@ li.querySelector(".delete-btn").onclick = (e) => {
 function showShelterDetails(feature) {
   const coords = feature.geometry.coordinates;
   map.flyTo({ center: coords, zoom: 15, speed: 1 });
-  const highlightSource = { type: 'FeatureCollection', features: [feature] };
-  if (map.getSource('selected-shelter')) {
-    map.getSource('selected-shelter').setData(highlightSource);
-  } else {
-    map.addSource('selected-shelter', { type: 'geojson', data: highlightSource });
-    map.addLayer({
-      id: 'selected-shelter-layer',
-      type: 'circle',
-      source: 'selected-shelter',
-      paint: {
-        'circle-radius': 10,
-        'circle-color': '#ff6600',
-        'circle-stroke-width': 2,
-        'circle-stroke-color': '#fff'
-      }
-    });
+
+  // Remove previous marker
+  if (window.selectedShelterMarker) {
+    window.selectedShelterMarker.remove();
   }
+
+  // Add new red marker
+  window.selectedShelterMarker = new mapboxgl.Marker({ color: 'red' })
+    .setLngLat(coords)
+    .addTo(map);
+
   document.getElementById("shelterListView").style.display = "none";
   document.getElementById("shelterDetails").style.display = "block";
+
   const p = feature.properties;
-  const content = `
-    <h3>${p.name}</h3>
-    <p><strong>Type:</strong> ${capitalize(p.shelter_type)}</p>
-    <p><strong>Gas:</strong> ${p.gas}</p>
-    <p><strong>Water:</strong> ${p.water}</p>
-    <p><strong>Electricity:</strong> ${p.electricity}</p>
-    <p><strong>Sewage:</strong> ${p.sewage}</p>
-    <p><strong>Square Footage:</strong> ${p.square_footage || 'N/A'}</p>
-    <p><strong>Amenities:</strong> ${Array.isArray(p.amenities) ? p.amenities.join(', ') : p.amenities}</p>
-    <p><strong>Notes:</strong> ${p.notes || 'None'}</p>
-  `;
-  document.getElementById("shelterDetailContent").innerHTML = content;
+  document.getElementById("detail-name").textContent = p.name;
+  document.getElementById("detail-type").textContent = capitalize(p.shelter_type);
+  document.getElementById("detail-gas").textContent = p.gas;
+  document.getElementById("detail-water").textContent = p.water;
+  document.getElementById("detail-electricity").textContent = p.electricity;
+  document.getElementById("detail-sewage").textContent = p.sewage;
+  document.getElementById("detail-sqft").textContent = p.square_footage || "N/A";
+  document.getElementById("detail-amenities").textContent = Array.isArray(p.amenities) ? p.amenities.join(", ") : p.amenities;
+  document.getElementById("detail-notes").textContent = p.notes || "None";
 }
+
 
 function backToList() {
   renderShelterList(allShelterData);
