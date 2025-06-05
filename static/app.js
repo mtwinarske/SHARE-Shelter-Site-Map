@@ -70,7 +70,7 @@ sqftSlider.noUiSlider.on('update', function (values) {
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ252ZWxleiIsImEiOiJjbTZzdGZzcWMwYjJzMm5wd2xmYnRyeHU0In0.1qw-r2WipRZcibgMfyoLJw';
 const map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/light-v11',
+  style: 'mapbox://styles/mapbox/satellite-streets-v12',
   center: [-122.335167, 47.608013],
   zoom: 12
 });
