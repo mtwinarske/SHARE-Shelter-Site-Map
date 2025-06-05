@@ -49,7 +49,7 @@ const sqftSlider = document.getElementById('sqftSlider');
 const sqftRangeText = document.getElementById('sqftRangeText');
 
 noUiSlider.create(sqftSlider, {
-  start: [0, 5000],
+  start: [0, 2500],
   connect: true,
   step: 50,
   range: {
@@ -120,7 +120,7 @@ document.querySelector('.right-sidebar').scrollTop = 0;
         source: 'shelters',
         paint: {
           'circle-radius': 6,
-          'circle-color': '#4470AD', // "Blue Yonder" color
+          'circle-color': '#9933ff', // "bright purple" color
           'circle-opacity': 0.8
         }
       });
